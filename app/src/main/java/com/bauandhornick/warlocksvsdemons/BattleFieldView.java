@@ -26,6 +26,7 @@ public class BattleFieldView extends View {
     Bitmap bitmapTemp;
     Bitmap bitMap[][];
     Bitmap backgroundBitmap;
+    Bitmap towerBitmap;
 
     public BattleFieldView(Context context) {
         super(context);
@@ -69,8 +70,11 @@ public class BattleFieldView extends View {
                 bitMap[i][j] = Bitmap.createBitmap(bitmapTemp, 100*j, 100*i, 100, 1000 / 11);
         }
 
-        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.background1);
+        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.grass_template2);
         backgroundBitmap = Bitmap.createScaledBitmap(bitmapTemp,currentWidth,currentHeight,false);
+
+        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.torremagica5);
+        towerBitmap = Bitmap.createScaledBitmap(bitmapTemp, 250, 250, false);
 
 
         //Canvas canvas = new Canvas(bitmap);
@@ -108,6 +112,9 @@ public class BattleFieldView extends View {
         m.setScale(-1,1,50,50);
 
         canvas.drawBitmap(bitMap[5][6],m,paint);
+
+        m.setTranslate(1500, 700);
+        canvas.drawBitmap(towerBitmap,m, paint);
 
 
 //        canvas.drawBitmap(bitmap2,0,0,paint);
