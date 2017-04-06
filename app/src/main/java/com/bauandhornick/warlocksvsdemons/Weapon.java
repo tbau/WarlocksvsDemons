@@ -63,14 +63,6 @@ public class Weapon {
         this.rechargeRate = rechargeRate;
     }
 
-    public int getCostToBuy() {
-        return costToBuy;
-    }
-
-    public void setCostToBuy(int costToBuy) {
-        this.costToBuy = costToBuy;
-    }
-
     public String getAreaOfEffect() {
         return areaOfEffect;
     }

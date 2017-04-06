@@ -34,6 +34,6 @@ public class Ally extends Character {
         this.costToBuy = costToBuy;
     }
 
-   
+
 
 }
