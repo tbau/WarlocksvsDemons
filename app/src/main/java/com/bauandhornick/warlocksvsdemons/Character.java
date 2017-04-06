@@ -15,6 +15,11 @@ public abstract class Character {
 
     private int damage;
 
+    Direction directionFacing=Direction.RIGHT;
+
+    enum Direction{RIGHT,LEFT,UP,DOWN};
+
+
     public Character(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
                      Bitmap appearance, String weakness, String affinity) {
         this.pos_x = pos_x;

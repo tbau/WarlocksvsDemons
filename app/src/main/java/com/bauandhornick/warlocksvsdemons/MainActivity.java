@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -30,7 +32,12 @@ public class MainActivity extends AppCompatActivity {
         im.setImageResource(R.drawable.torremagica5);
 
         bfv = (BattleFieldView)findViewById(R.id.BattleFieldView);
-
+        HorizontalScrollView hsv = (HorizontalScrollView)findViewById(R.id.scrollview);
+        ViewGroup.LayoutParams params = hsv.getLayoutParams();
+// Changes the height and width to the specified *pixels*
+        params.height = (int)(bfv.currentHeight*2/13.0);
+        params.width = bfv.currentWidth;
+        hsv.setLayoutParams(params);
 
         int k=0;
         for(int i = 0;i<11;i++){
