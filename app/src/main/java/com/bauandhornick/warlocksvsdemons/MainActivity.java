@@ -1,5 +1,9 @@
 package com.bauandhornick.warlocksvsdemons;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,14 +12,52 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    BattleFieldView bfv;
+    Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
+
+        LinearLayout ll = (LinearLayout)findViewById(R.id.scroll);
+        ImageView im = new ImageView(getApplicationContext());
+        im.setImageResource(R.drawable.torremagica5);
+
+        bfv = (BattleFieldView)findViewById(R.id.BattleFieldView);
+
+
+        int k=0;
+        for(int i = 0;i<11;i++){
+            for(int j=0;j<8;j++){
+            im = new ImageView(getApplicationContext());
+            bitmap = bfv.bitMap[i][j];
+                bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
+            im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
+            im.setBackgroundColor(0xffffffff);
+            im.setId(k);
+                im.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(),v.getId()+" ",Toast.LENGTH_LONG).show();
+
+                        int i=v.getId()/8;
+                        int j=v.getId()%8;
+                        bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
+                        bfv.invalidate();
+
+                    }
+                });
+                k++;
+            ll.addView(im);
+            }
+
+    }}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

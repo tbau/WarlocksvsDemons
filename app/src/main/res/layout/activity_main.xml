@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,5 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/BattleFieldView"
-        android:scrollbarSize="40dp" />
+        android:scrollbarSize="40dp"
+       />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/scroll">
+
+        </LinearLayout>
+    </HorizontalScrollView>
 </RelativeLayout>

@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
  * Created by Thomas on 4/3/2017.
  */
 
-public class Character {
+public abstract class Character {
     private int pos_x;
     private int pos_y;
 
@@ -100,4 +100,5 @@ public class Character {
         this.affinity = affinity;
     }
 
+    public abstract void animate();
 }
