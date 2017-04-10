@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
  * Created by Thomas on 4/3/2017.
  */
 
-public class Character {
+public abstract class Character {
     private int pos_x;
     private int pos_y;
 
@@ -14,6 +14,11 @@ public class Character {
     private int height;
 
     private int damage;
+
+    Direction directionFacing=Direction.RIGHT;
+
+    enum Direction{RIGHT,LEFT,UP,DOWN};
+
 
     public Character(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
                      Bitmap appearance, String weakness, String affinity) {
@@ -100,4 +105,5 @@ public class Character {
         this.affinity = affinity;
     }
 
+    public abstract void animate();
 }

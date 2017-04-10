@@ -8,10 +8,17 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Thomas on 3/24/2017.
@@ -27,19 +34,27 @@ public class BattleFieldView extends View {
     Bitmap bitMap[][];
     Bitmap backgroundBitmap;
     Bitmap towerBitmap;
+    Context context;
+    Random rand;
+
+    List <Character> alliesAndEnemies;
+    animateEnemies enemyThread;
 
     public BattleFieldView(Context context) {
         super(context);
         setUp(null);
+        this.context = context;
     }
 
     public BattleFieldView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         setUp(attrs);
     }
 
     public BattleFieldView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
         setUp(attrs);
     }
 
@@ -70,13 +85,23 @@ public class BattleFieldView extends View {
                 bitMap[i][j] = Bitmap.createBitmap(bitmapTemp, 100*j, 100*i, 100, 1000 / 11);
         }
 
-        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.grass_template2);
+        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.path2);
         backgroundBitmap = Bitmap.createScaledBitmap(bitmapTemp,currentWidth,currentHeight,false);
 
         bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.torremagica5);
         towerBitmap = Bitmap.createScaledBitmap(bitmapTemp, 250, 250, false);
 
+        alliesAndEnemies = new ArrayList<>();
 
+        rand = new Random();
+        for(int i=0;i<1;i++){
+            alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),100,100,10,0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
+                    ,0,0,0,0,0,100,"no",this));
+        }
+        bitmapTemp=null;
+
+        enemyThread = new animateEnemies(this);
+        enemyThread.execute();
         //Canvas canvas = new Canvas(bitmap);
 
         //drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
@@ -95,7 +120,7 @@ public class BattleFieldView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawPaint(paint);
+        //canvas.drawPaint(paint);
 
         canvas.drawBitmap(backgroundBitmap,0,0,paint);
 
@@ -108,14 +133,19 @@ public class BattleFieldView extends View {
 
 
         //m.setRotate(80,50,50);
-        m.setTranslate(100,0);
-        m.setScale(-1,1,50,50);
+        m.setTranslate(500,500);
+        //m.setScale(-1,1,50,50);
 
-        canvas.drawBitmap(bitMap[5][6],m,paint);
+        if(bitmapTemp!=null) {
+            canvas.drawBitmap(bitmapTemp, m, paint);
+            }
 
-        m.setTranslate(1500, 700);
-        canvas.drawBitmap(towerBitmap,m, paint);
+        //canvas.drawBitmap(towerBitmap,m, paint);
 
+        for(int i=alliesAndEnemies.size()-1;i>=0;i--){
+            m.setTranslate(alliesAndEnemies.get(i).getPos_x(),alliesAndEnemies.get(i).getPos_y());
+            canvas.drawBitmap(alliesAndEnemies.get(i).getAppearance(),m, paint);
+        }
 
 //        canvas.drawBitmap(bitmap2,0,0,paint);
 
@@ -126,5 +156,45 @@ public class BattleFieldView extends View {
      //   currentWidth = w;
      //   currentHeight = h;
     }
+    private class animateEnemies extends AsyncTask<Void,Void,Void>{
+        private BattleFieldView context;
 
+        public animateEnemies(BattleFieldView context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            int i=0;
+            while(true){
+
+            for(Character character:alliesAndEnemies){
+
+             character.animate();
+
+
+                publishProgress();
+            }
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(false)
+                  break;
+              i++;
+              if(i%5==0)
+                  alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),100,100,10,0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
+                          ,0,0,0,0,0,100,"no",context));
+          }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+            invalidate();
+        }
+    }
 }
