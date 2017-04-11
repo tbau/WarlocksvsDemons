@@ -38,8 +38,6 @@ public class BattleFieldView extends View {
     Bitmap backgroundBitmap;
     Bitmap towerBitmap;
 
-    int
-
     Context context;
     Random rand;
 
@@ -105,15 +103,15 @@ public class BattleFieldView extends View {
         for(int i=0;i<17;i++) {
             enemyBitmapTemp = Bitmap.createBitmap(bitmapTemp, 500, 600, 100, 200);
 
-        enemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),0,enemyBitmapTemp,));
+        //enemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),0,enemyBitmapTemp,));
         }
 
         alliesAndEnemies = new ArrayList<>();
 
         rand = new Random();
         for(int i=0;i<1;i++){
-            alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
-                    ,0,0,0,0,0,100,"no",this));
+            alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, this));
+
         }
         bitmapTemp=null;
 
@@ -202,10 +200,9 @@ public class BattleFieldView extends View {
                 if(false)
                   break;
               i++;
-              if(i%5==0)
-                  alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
-                          ,0,0,0,0,0,100,"no",context));
-
+              if(i%5==0) {
+                  alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, context));
+              }
           }
             return null;
         }
