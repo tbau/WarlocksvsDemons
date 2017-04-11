@@ -9,34 +9,13 @@ import android.graphics.Bitmap;
 
 public class Enemy extends Character {
 
-    private int damage;
-    private int health;
-    private int manaGain;
+    EnemyAttributes ea;
+
     private BattleFieldView context;
-    public Enemy(int pos_x, int pos_y, int requireFlip,
-                 Bitmap appearance, String weakness, String affinity, int health, int manaGain,int damage, BattleFieldView context) {
-        super(pos_x, pos_y, requireFlip, appearance, weakness, affinity);
-        this.health = health;
-        this.manaGain = manaGain;
-        this.damage=damage;
+    public Enemy(int pos_x, int pos_y,Bitmap appearance,EnemyAttributes ea, BattleFieldView context) {
+        super(pos_x, pos_y,appearance);
+        this.ea = ea;
         this.context=context;
-    }
-
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getManaGain() {
-        return manaGain;
-    }
-
-    public void setManaGain(int manaGain) {
-        this.manaGain = manaGain;
     }
 
     @Override
