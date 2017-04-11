@@ -33,8 +33,13 @@ public class BattleFieldView extends View {
     Paint paint;
     Bitmap bitmapTemp;
     Bitmap bitMap[][];
+    Bitmap enemyBitmapTemp;
+    List<Enemy> enemyList;
     Bitmap backgroundBitmap;
     Bitmap towerBitmap;
+
+    int
+
     Context context;
     Random rand;
 
@@ -91,6 +96,17 @@ public class BattleFieldView extends View {
 
         bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.torremagica5);
         towerBitmap = Bitmap.createScaledBitmap(bitmapTemp, 250, 250, false);
+
+        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.dg_undead32);
+        bitmapTemp = Bitmap.createScaledBitmap(bitmapTemp,800,1200,false);
+
+        enemyList = new ArrayList<>();
+
+        for(int i=0;i<17;i++) {
+            enemyBitmapTemp = Bitmap.createBitmap(bitmapTemp, 500, 600, 100, 200);
+
+        enemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),0,enemyBitmapTemp,));
+        }
 
         alliesAndEnemies = new ArrayList<>();
 

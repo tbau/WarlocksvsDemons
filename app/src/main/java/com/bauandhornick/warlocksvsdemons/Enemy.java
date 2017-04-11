@@ -8,26 +8,20 @@ import android.graphics.Bitmap;
  */
 
 public class Enemy extends Character {
-    private int speed;
+
+    private int damage;
     private int health;
     private int manaGain;
     private BattleFieldView context;
-    public Enemy(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
-                 Bitmap appearance, String weakness, String affinity, int speed, int health, int manaGain,BattleFieldView context) {
+    public Enemy(int pos_x, int pos_y, int requireFlip,
+                 Bitmap appearance, String weakness, String affinity, int health, int manaGain,int damage, BattleFieldView context) {
         super(pos_x, pos_y, requireFlip, appearance, weakness, affinity);
-        this.speed = speed;
         this.health = health;
         this.manaGain = manaGain;
+        this.damage=damage;
         this.context=context;
     }
 
-    public int getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
 
     public int getHealth() {
         return health;
