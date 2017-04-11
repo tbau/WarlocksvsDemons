@@ -10,23 +10,15 @@ public abstract class Character {
     private int pos_x;
     private int pos_y;
 
-    private int width;
-    private int height;
-
-    private int damage;
-
     Direction directionFacing=Direction.RIGHT;
 
     enum Direction{RIGHT,LEFT,UP,DOWN};
 
 
-    public Character(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
+    public Character(int pos_x, int pos_y, int requireFlip,
                      Bitmap appearance, String weakness, String affinity) {
         this.pos_x = pos_x;
         this.pos_y = pos_y;
-        this.width = width;
-        this.height = height;
-        this.damage = damage;
         this.requireFlip = requireFlip;
         this.appearance = appearance;
         this.weakness = weakness;
@@ -55,30 +47,6 @@ public abstract class Character {
 
     public void setPos_y(int pos_y) {
         this.pos_y = pos_y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
     }
 
     public Bitmap getAppearance() {

@@ -14,7 +14,7 @@ public class Enemy extends Character {
     private BattleFieldView context;
     public Enemy(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
                  Bitmap appearance, String weakness, String affinity, int speed, int health, int manaGain,BattleFieldView context) {
-        super(pos_x, pos_y, width, height, damage, requireFlip, appearance, weakness, affinity);
+        super(pos_x, pos_y, requireFlip, appearance, weakness, affinity);
         this.speed = speed;
         this.health = health;
         this.manaGain = manaGain;

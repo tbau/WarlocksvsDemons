@@ -15,11 +15,11 @@ public class Ally extends Character {
     private double rechargeRate;
     private BattleFieldView context;
 
-    public Ally(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
+    public Ally(int pos_x, int pos_y, int requireFlip,
                 Bitmap appearance, String weakness, String affinity, int typeOfWeapon,
                 int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate,
                 int costToBuy, String areaOfEffect,BattleFieldView context) {
-        super(pos_x, pos_y, width, height, damage, requireFlip, appearance, weakness, affinity);
+        super(pos_x, pos_y, requireFlip, appearance, weakness, affinity);
         this.typeOfWeapon = typeOfWeapon;
         this.weaponRange = weaponRange;
         this.weaponAffinity = weaponAffinity;
