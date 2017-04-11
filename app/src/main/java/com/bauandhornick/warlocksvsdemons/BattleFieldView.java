@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,13 @@ public class BattleFieldView extends View {
     Paint paint;
     Bitmap bitmapTemp;
     Bitmap bitMap[][];
+    Bitmap enemyBitmapTemp;
+    List<Enemy> enemyList;
     Bitmap backgroundBitmap;
     Bitmap towerBitmap;
+
+    int
+
     Context context;
     Random rand;
 
@@ -91,11 +97,22 @@ public class BattleFieldView extends View {
         bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.torremagica5);
         towerBitmap = Bitmap.createScaledBitmap(bitmapTemp, 250, 250, false);
 
+        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.dg_undead32);
+        bitmapTemp = Bitmap.createScaledBitmap(bitmapTemp,800,1200,false);
+
+        enemyList = new ArrayList<>();
+
+        for(int i=0;i<17;i++) {
+            enemyBitmapTemp = Bitmap.createBitmap(bitmapTemp, 500, 600, 100, 200);
+
+        enemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),0,enemyBitmapTemp,));
+        }
+
         alliesAndEnemies = new ArrayList<>();
 
         rand = new Random();
         for(int i=0;i<1;i++){
-            alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),100,100,10,0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
+            alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
                     ,0,0,0,0,0,100,"no",this));
         }
         bitmapTemp=null;
@@ -156,7 +173,7 @@ public class BattleFieldView extends View {
      //   currentWidth = w;
      //   currentHeight = h;
     }
-    private class animateEnemies extends AsyncTask<Void,Void,Void>{
+    private class animateEnemies extends AsyncTask<Void,Integer,Void>{
         private BattleFieldView context;
 
         public animateEnemies(BattleFieldView context) {
@@ -172,28 +189,32 @@ public class BattleFieldView extends View {
 
              character.animate();
 
-
-                publishProgress();
             }
+                publishProgress(i);
+
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
 
                 if(false)
                   break;
               i++;
               if(i%5==0)
-                  alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),100,100,10,0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
+                  alliesAndEnemies.add(new Ally(0, (int) (currentHeight*2/13.0),0,bitMap[rand.nextInt(10)][rand.nextInt(7)],"fire","ice"
                           ,0,0,0,0,0,100,"no",context));
+
           }
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
+        protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+            if(values[0]%5000==0)
+                Toast.makeText(context.getContext().getApplicationContext(),alliesAndEnemies.size()+"",Toast.LENGTH_SHORT).show();
             invalidate();
         }
     }

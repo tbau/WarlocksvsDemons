@@ -8,22 +8,59 @@ import android.graphics.Bitmap;
  */
 
 public class Ally extends Character {
-
     Weapon weapon;
-    private int costToBuy;
+    private BattleFieldView context;
 
-
-    public Ally(int pos_x, int pos_y, int width, int height, int damage, int requireFlip,
-                Bitmap appearance, String weakness, String affinity, int costToBuy, Weapon weapon) {
-
-        super(pos_x, pos_y, width, height, damage, requireFlip, appearance, weakness, affinity);
-        this.weapon = weapon;
-        /*this.typeOfWeapon = typeOfWeapon;
-        this.weaponRange = weaponRange;
-        this.weaponAffinity = weaponAffinity;
-        this.weaponSpeed = weaponSpeed;
-        this.rechargeRate = rechargeRate;*/
+    public Ally(int pos_x, int pos_y, int requireFlip,
+                Bitmap appearance, String weakness, String affinity, int costToBuy, Weapon weapon,BattleFieldView context) {
+        super(pos_x, pos_y, requireFlip, appearance, weakness, affinity);
+        this.weapon=weapon;
         this.costToBuy = costToBuy;
+        this.context=context;
+    }
+
+    private int costToBuy;
+    private String areaOfEffect;
+
+
+    public int getTypeOfWeapon() {
+        return typeOfWeapon;
+    }
+
+    public void setTypeOfWeapon(int typeOfWeapon) {
+        this.typeOfWeapon = typeOfWeapon;
+    }
+
+    public int getWeaponRange() {
+        return weaponRange;
+    }
+
+    public void setWeaponRange(int weaponRange) {
+        this.weaponRange = weaponRange;
+    }
+
+    public int getWeaponAffinity() {
+        return weaponAffinity;
+    }
+
+    public void setWeaponAffinity(int weaponAffinity) {
+        this.weaponAffinity = weaponAffinity;
+    }
+
+    public int getWeaponSpeed() {
+        return weaponSpeed;
+    }
+
+    public void setWeaponSpeed(int weaponSpeed) {
+        this.weaponSpeed = weaponSpeed;
+    }
+
+    public double getRechargeRate() {
+        return rechargeRate;
+    }
+
+    public void setRechargeRate(double rechargeRate) {
+        this.rechargeRate = rechargeRate;
     }
 
     public int getCostToBuy() {
@@ -34,7 +71,13 @@ public class Ally extends Character {
         this.costToBuy = costToBuy;
     }
 
+    public String getAreaOfEffect() {
+        return areaOfEffect;
+    }
 
+    public void setAreaOfEffect(String areaOfEffect) {
+        this.areaOfEffect = areaOfEffect;
+    }
 
     @Override
     public void animate() {
