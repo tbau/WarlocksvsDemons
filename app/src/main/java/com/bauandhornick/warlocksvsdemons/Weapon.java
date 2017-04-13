@@ -11,6 +11,7 @@ public class Weapon {
     private int weaponRange;
     private int weaponAffinity;
     private int weaponSpeed;
+    private int damage;
     private double rechargeRate;
     private String areaOfEffect;
 
@@ -59,9 +60,7 @@ public class Weapon {
         return rechargeRate;
     }
 
-    public void setRechargeRate(double rechargeRate) {
-        this.rechargeRate = rechargeRate;
-    }
+    public void setRechargeRate(double rechargeRate) { this.rechargeRate = rechargeRate; }
 
     public String getAreaOfEffect() {
         return areaOfEffect;
