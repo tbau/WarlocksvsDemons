@@ -30,27 +30,38 @@ import java.util.Set;
 
 public class BattleFieldView extends View {
 
-    int currentWidth;
-    int currentHeight;
+    BattleManager bm;
 
-    Paint paint;
-    Bitmap bitmapTemp;
-    Bitmap bitMap[][];
+    Context context;  // Used to get View width and height in background thread;
+    Random rand;      // Used to add a random enemy to list of enemies;
 
-    Bitmap enemyBitmapTemp;
-    List<Enemy> enemyList;
+    int currentWidth;    //Width of View
+    int currentHeight;   //Height of View
 
-    Bitmap backgroundBitmap;
-    Bitmap towerBitmap;
-
-    Context context;
-    Random rand;
-
-    HashMap<Integer, Weapon> weapons;
+    Paint paint;         //Used to draw on Canvas
 
     HashMap<Integer,EnemyAttributes> enemyAttributesList;
+    HashMap<Integer,AllyAttributes>  allyAttributesList;
+    HashMap<Integer, Weapon> weapons;
 
-    List <Character> alliesAndEnemies;
+    HashMap <Integer, FilePosition> enemyIndexes;
+    HashMap <Integer, FilePosition> allyIndexes;
+
+    List <Enemy> availableEnemyList; //Holds list of enemies to choose from when creating a new enemy on screen
+    List <Ally>  availableAllyList; //Holds list of allies to choose from when creating a new ally on screen
+
+    List <Enemy> enemiesInBattle;  // Holds list of enemies on screen
+    List <Ally> alliesInBattle;    // Holds list of allies on screen
+
+    Bitmap dg_classm32Bitmap;   // Bitmap to hold dg_class32 images for allies and some enemies
+    Bitmap dg_humans32Bitmap;   // Bitmap to hold dg_humans32 images for allies
+
+    Bitmap dg_undead32Bitmap;   // Bitmap to hold dg_undead32 images for enemies
+    Bitmap dg_uniques32Bitmap;  // Bitmap to hold dg_uniques32 images for enemies
+    Bitmap dg_monster632Bitmap; // Bitmap to hold dg_monster632 images for enemies
+
+    Bitmap backgroundBitmap;  // Holds the bitmap for the background
+
     animateEnemies enemyThread;
 
     public BattleFieldView(Context context) {
@@ -84,30 +95,58 @@ public class BattleFieldView extends View {
         currentWidth=dm.widthPixels;
         currentHeight= dm.heightPixels;
 
+        bm = new BattleManager();
+
+        enemyAttributesList = new HashMap<>();
+        allyAttributesList = new HashMap<>();
+        weapons = new HashMap<>();
+
         initializeEnemyAttributes();
+        initializeAllyAttributes();
+        initializeWeapons();
+
+        enemyIndexes = new HashMap<>();
+        allyIndexes = new HashMap<>();
+
+        initializeEnemyIndexes();
+        initializeAllyIndexes();
+
+        availableEnemyList = new ArrayList<>();
+        availableAllyList = new ArrayList<>();
+
+        enemiesInBattle = new ArrayList<>();
+        alliesInBattle = new ArrayList<>();
 
 
         //float widthPixel= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,currentWidth,dm);
         //float heightPixel= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,currentHeight,dm);
 
-        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.dg_classm32);
-        bitmapTemp = Bitmap.createScaledBitmap(bitmapTemp,800,1100,false);
+        dg_classm32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_classm32new); // Load bitmap for some allies
+        dg_classm32Bitmap = Bitmap.createScaledBitmap(dg_classm32Bitmap,800,1100,false);
 
-        bitMap = new Bitmap[11][8];
+        dg_humans32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_humans32); // Load bitmap for some allies
+        dg_humans32Bitmap = Bitmap.createScaledBitmap(dg_classm32Bitmap,600,700,false);
+
+
 
         for(int i=0;i<11;i++) {
             for(int j=0;j<8;j++)
-                bitMap[i][j] = Bitmap.createBitmap(bitmapTemp, 100*j, 100*i, 100, 1000 / 11);
+
+                bitMap[i][j] = Bitmap.createBitmap(dg_classm32Bitmap, 100*j, 100*i, 100, 1000 / 11);
         }
 
-        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.path2);
-        backgroundBitmap = Bitmap.createScaledBitmap(bitmapTemp,currentWidth,currentHeight,false);
+        dg_undead32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_undead32);   // Load bitmap for some enemies
+        dg_undead32Bitmap = Bitmap.createScaledBitmap(dg_undead32Bitmap,700,900,false);
 
-        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.torremagica5);
-        towerBitmap = Bitmap.createScaledBitmap(bitmapTemp, 250, 250, false);
+        dg_uniques32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_uniques32); // Load bitmap for some allies
+        dg_uniques32Bitmap = Bitmap.createScaledBitmap(dg_uniques32Bitmap,1000,900,false);
 
-        bitmapTemp = BitmapFactory.decodeResource(getResources(),R.drawable.dg_undead32);
-        bitmapTemp = Bitmap.createScaledBitmap(bitmapTemp,800,1200,false);
+        dg_monster632Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_monster632); // Load bitmap for some allies
+        dg_monster632Bitmap = Bitmap.createScaledBitmap(dg_monster632Bitmap,600,1300,false);
+
+        backgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.path2);
+        backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap,currentWidth,currentHeight,false);
+
 
         enemyList = new ArrayList<>();
 
@@ -124,7 +163,7 @@ public class BattleFieldView extends View {
             alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, this));
 
         }
-        bitmapTemp=null;
+
 
         enemyThread = new animateEnemies(this);
         enemyThread.execute();
@@ -136,6 +175,7 @@ public class BattleFieldView extends View {
 
 
     }
+
     public void initializeEnemyAttributes(){
         enemyAttributesList = new HashMap<>();
 
@@ -159,7 +199,29 @@ public class BattleFieldView extends View {
         enemyAttributesList.put(12,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,1600,2500,1800)); //Ice fairy
 
     }
+    private void initializeAllyAttributes() {
 
+
+
+    }
+
+    public void initializeWeapons()
+    {
+        weapons.put(0, new Weapon(0,0,0,0,0.0,"10"));
+    }
+
+    private void initializeEnemyIndexes() {
+
+
+
+    }
+    private void initializeAllyIndexes() {
+
+
+
+
+
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -180,10 +242,6 @@ public class BattleFieldView extends View {
         //m.setRotate(80,50,50);
         m.setTranslate(500,500);
         //m.setScale(-1,1,50,50);
-
-        if(bitmapTemp!=null) {
-            canvas.drawBitmap(bitmapTemp, m, paint);
-            }
 
         //canvas.drawBitmap(towerBitmap,m, paint);
 
@@ -246,9 +304,6 @@ public class BattleFieldView extends View {
         }
     }
 
-    public void initializeWeapons(HashMap<Integer, Weapon> weapons)
-    {
-        this.weapons.put(0, new Weapon(0,0,0,0,0.0,"10"));
-    }
+
 
 }
