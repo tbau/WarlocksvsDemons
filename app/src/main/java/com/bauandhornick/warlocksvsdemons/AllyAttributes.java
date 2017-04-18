@@ -9,8 +9,8 @@ import android.graphics.Bitmap;
 public class AllyAttributes {
 
     private int requireFlip;
-    private String weakness;
-    private String affinity;
+    private Character.Element weakness;
+    private Character.Element affinity;
     private int costToBuy;
 
     public int getRequireFlip() {
@@ -21,19 +21,19 @@ public class AllyAttributes {
         this.requireFlip = requireFlip;
     }
 
-    public String getWeakness() {
+    public Character.Element getWeakness() {
         return weakness;
     }
 
-    public void setWeakness(String weakness) {
+    public void setWeakness(Character.Element weakness) {
         this.weakness = weakness;
     }
 
-    public String getAffinity() {
+    public Character.Element getAffinity() {
         return affinity;
     }
 
-    public void setAffinity(String affinity) {
+    public void setAffinity(Character.Element affinity) {
         this.affinity = affinity;
     }
 
