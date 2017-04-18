@@ -12,7 +12,7 @@ public class FilePosition {
 
     private int x;
     private int y;
-    private FileNames fileNames;
+    private FileNames fileName;
 
     public int getX() {
         return x;
@@ -30,17 +30,17 @@ public class FilePosition {
         this.y = y;
     }
 
-    public FileNames getFileNames() {
-        return fileNames;
+    public FileNames getFileName() {
+        return fileName;
     }
 
-    public void setFileNames(FileNames fileNames) {
-        this.fileNames = fileNames;
+    public void setFileName(FileNames fileName) {
+        this.fileName = fileName;
     }
 
-    public FilePosition(int x, int y, FileNames fileNames) {
+    public FilePosition(int x, int y, FileNames fileName) {
         this.x = x;
         this.y = y;
-        this.fileNames = fileNames;
+        this.fileName = fileName;
     }
 }
