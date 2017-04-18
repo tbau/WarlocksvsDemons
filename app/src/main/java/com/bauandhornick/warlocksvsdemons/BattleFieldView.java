@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -33,13 +34,17 @@ public class BattleFieldView extends View {
     Paint paint;
     Bitmap bitmapTemp;
     Bitmap bitMap[][];
+
     Bitmap enemyBitmapTemp;
     List<Enemy> enemyList;
+
     Bitmap backgroundBitmap;
     Bitmap towerBitmap;
 
     Context context;
     Random rand;
+
+    HashMap<Integer, Weapon> weapons;
 
     List <Character> alliesAndEnemies;
     animateEnemies enemyThread;
@@ -215,4 +220,10 @@ public class BattleFieldView extends View {
             invalidate();
         }
     }
+
+    public void initializeWeapons(HashMap<Integer, Weapon> weapons)
+    {
+        this.weapons.put(0, new Weapon(0,0,0,0,0.0,"10"));
+    }
+
 }

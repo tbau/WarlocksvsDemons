@@ -1,0 +1,54 @@
+List of Warlocks in order:
+
+classm32 
+[5][1]: Novice Fire Mage
+
+humans32
+[0][2] - Novice Ice Mage
+
+classm32
+[5][2]: Novice Lightning Mage
+[3][3]: Apprentice Fire Mage
+[8][2]: Apprentice Ice Mage (currently orange, change to light blue)
+
+humans32 
+[2][3]: Apprentice Lightning Mage
+
+
+
+classm32
+[2][2] - Advent Fire Mage 
+[1][2] - Advent Ice Mage (currently white, change to light blue)
+[4][2] - Advent Lightning (currently black, change to yellow)
+[2][4] - Expert Fire Mage (currently gray, change to Red)
+[1][4] - Expert Ice Mage
+[4][4] - Expert Lightning Mage (brighten the yellow)
+
+
+-------------------------------------------
+MONSTERS IN ORDER
+
+undead32:
+1. [5][3] - Skeleton with long sword
+2. [5][6] - Skeleton with shield/sword 
+3. [5][5] - Skeleton with double swords
+
+class32
+1. [10][7] - Green Orc with shield & axe
+2. [10][3] - Green Orc, yellow helmet & sword
+3. [10][5] - Green Orc, brown coat & sword.
+
+uniques32
+1. [1][2] - Troll with Shield & Battle Axe
+2. [1][5] - Troll with cross shield and sword
+3. [1][6] - Troll with cross shield & mace
+4. [1][4] - Red Troll, golden shield & sword
+
+monster632
+1. [4][0] - Red Demon(troll?) with sword
+2. Red [1][1], purple [1][3], black skeleton floating red eyes [1][6], undead
+
+uniques32
+1. Fire Fairy [3][6]
+2. Lightning Fairy [3][7]
+3. Ice Fairy [4][7]
