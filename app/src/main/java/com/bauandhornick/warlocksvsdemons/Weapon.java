@@ -1,5 +1,7 @@
 package com.bauandhornick.warlocksvsdemons;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Alex Hornick on 4/6/2017.
  */
@@ -7,7 +9,7 @@ package com.bauandhornick.warlocksvsdemons;
 public class Weapon {
 
 
-    private int typeOfWeapon;
+    private Bitmap weaponAppearance;
     private int weaponRange;
     private int weaponAffinity;
     private int weaponSpeed;
@@ -15,8 +17,8 @@ public class Weapon {
     private double rechargeRate;
     private String areaOfEffect;
 
-    public Weapon(int typeOfWeapon, int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate, String areaOfEffect) {
-        this.typeOfWeapon = typeOfWeapon;
+    public Weapon(Bitmap weaponAppearance, int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate, String areaOfEffect) {
+        this.weaponAppearance = weaponAppearance;
         this.weaponRange = weaponRange;
         this.weaponAffinity = weaponAffinity;
         this.weaponSpeed = weaponSpeed;
@@ -24,13 +26,11 @@ public class Weapon {
         this.areaOfEffect = areaOfEffect;
     }
 
-    public int getTypeOfWeapon() {
-        return typeOfWeapon;
+    public Bitmap getWeaponAppearance() {
+        return weaponAppearance;
     }
 
-    public void setTypeOfWeapon(int typeOfWeapon) {
-        this.typeOfWeapon = typeOfWeapon;
-    }
+    public void setTypeOfWeapon(Bitmap weaponAppearance) { this.weaponAppearance = weaponAppearance; }
 
     public int getWeaponRange() {
         return weaponRange;
