@@ -10,6 +10,8 @@ public abstract class Character {
     private int pos_x;
     private int pos_y;
 
+    enum Element{FIRE,ICE,LIGHTNING};
+
     public Bitmap getAppearance() {
         return appearance;
     }
