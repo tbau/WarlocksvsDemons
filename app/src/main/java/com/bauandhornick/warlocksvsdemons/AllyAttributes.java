@@ -14,6 +14,14 @@ public class AllyAttributes {
     private Character.Element affinity;
     private int costToBuy;
 
+    public AllyAttributes(String name, int requireFlip, Character.Element weakness, Character.Element affinity, int costToBuy) {
+        this.name = name;
+        this.requireFlip = requireFlip;
+        this.weakness = weakness;
+        this.affinity = affinity;
+        this.costToBuy = costToBuy;
+    }
+
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
