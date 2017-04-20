@@ -253,7 +253,7 @@ public class BattleFieldView extends View {
     }
 
     private void initializeAllyIndexes() {
-        allyIndexes.put(0, new FilePosition(5, 6, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(0, new FilePosition(5, 1, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(1, new FilePosition(0, 2, FilePosition.FileNames.DG_HUMANS32));
         allyIndexes.put(2, new FilePosition(5, 2, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(3, new FilePosition(3, 3, FilePosition.FileNames.DG_CLASSM32));
