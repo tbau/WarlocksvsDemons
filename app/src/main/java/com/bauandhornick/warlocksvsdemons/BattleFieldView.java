@@ -157,7 +157,6 @@ public class BattleFieldView extends View {
 
 
 
-
         /*for(int i=0;i<17;i++) {
             enemyBitmapTemp = Bitmap.createBitmap(bitmapTemp, 500, 600, 100, 200);
 
@@ -208,7 +207,21 @@ public class BattleFieldView extends View {
 
     }
     private void initializeAllyAttributes() {
+        allyAttributesList = new HashMap<>();
 
+        //Name, requireFlip, Weakness, Affinity, cost
+        allyAttributesList.put(0, new AllyAttributes("Novice Fire Mage", 0, Character.Element.LIGHTNING, Character.Element.FIRE,0));
+        allyAttributesList.put(1, new AllyAttributes("Novice Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,0));
+        allyAttributesList.put(2, new AllyAttributes("Novice Lightning Mage", 0, Character.Element.ICE, Character.Element.LIGHTNING,0));
+        allyAttributesList.put(3, new AllyAttributes("Apprentice Fire Mage", 0, Character.Element.LIGHTNING, Character.Element.FIRE,0));
+        allyAttributesList.put(4, new AllyAttributes("Apprentice Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,0));
+        allyAttributesList.put(5, new AllyAttributes("Apprentice Lightning Mage", 0, Character.Element.ICE, Character.Element.LIGHTNING,0));
+        allyAttributesList.put(6, new AllyAttributes("Advent Fire Mage", 0, Character.Element.LIGHTNING, Character.Element.FIRE,0));
+        allyAttributesList.put(7, new AllyAttributes("Advent Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,0));
+        allyAttributesList.put(8, new AllyAttributes("Advent Lightning Mage", 0, Character.Element.ICE, Character.Element.LIGHTNING,0));
+        allyAttributesList.put(9, new AllyAttributes("Expert Fire Mage", 0, Character.Element.LIGHTNING, Character.Element.FIRE,0));
+        allyAttributesList.put(10, new AllyAttributes("Expert Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,0));
+        allyAttributesList.put(11, new AllyAttributes("Expert Lightning Mage", 0, Character.Element.ICE, Character.Element.LIGHTNING,0));
 
 
     }
@@ -225,11 +238,11 @@ public class BattleFieldView extends View {
 
     }
     private void initializeAllyIndexes() {
-
-
-
-
-
+        allyIndexes.put(0, new FilePosition(5, 6, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(1, new FilePosition(0, 2, FilePosition.FileNames.DG_HUMANS32));
+        allyIndexes.put(2, new FilePosition(5, 2, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(3, new FilePosition(3, 3, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(4, new FilePosition(8, 2, FilePosition.FileNames.DG_CLASSM32));
     }
 
     @Override

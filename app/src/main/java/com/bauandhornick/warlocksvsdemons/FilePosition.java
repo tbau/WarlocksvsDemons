@@ -10,37 +10,37 @@ public class FilePosition {
         DG_CLASSM32, DG_HUMANS32, DG_UNDEAD32, DG_UNIQUES32, DG_MONSTER632
     }
 
-    private int x;
-    private int y;
-    private FileNames fileName;
+    private int col;
+    private int row;
+    private FileNames fileNames;
 
-    public int getX() {
-        return x;
+    public FilePosition(int col, int row, FileNames fileNames) {
+        this.col = col;
+        this.row = row;
+        this.fileNames = fileNames;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public int getCol() {
+        return col;
     }
 
-    public int getY() {
-        return y;
+    public void setCol(int col) {
+        this.col = col;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public int getRow() {
+        return row;
     }
 
-    public FileNames getFileName() {
-        return fileName;
+    public void setRow(int row) {
+        this.row = row;
     }
 
-    public void setFileName(FileNames fileName) {
-        this.fileName = fileName;
+    public FileNames getFileNames() {
+        return fileNames;
     }
 
-    public FilePosition(int x, int y, FileNames fileName) {
-        this.x = x;
-        this.y = y;
-        this.fileName = fileName;
+    public void setFileNames(FileNames fileNames) {
+        this.fileNames = fileNames;
     }
 }
