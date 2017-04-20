@@ -95,7 +95,7 @@ public class BattleFieldView extends View {
         currentWidth=dm.widthPixels;
         currentHeight= dm.heightPixels;
 
-        bm = new BattleManager();
+        bm = new BattleManager(10000,3000,1, BattleManager.Difficulty.NOVICE);
 
         enemyAttributesList = new HashMap<>();
         allyAttributesList = new HashMap<>();
@@ -129,10 +129,17 @@ public class BattleFieldView extends View {
 
 
 
-        for(int i=0;i<11;i++) {
-            for(int j=0;j<8;j++)
+        for(int i=0;i<12;i++) {
 
-                bitMap[i][j] = Bitmap.createBitmap(dg_classm32Bitmap, 100*j, 100*i, 100, 1000 / 11);
+            if(allyIndexes.get(i).getFileName().equals(FilePosition.FileNames.DG_CLASSM32)){
+            availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getX(),
+                    100*100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+            }
+            else if(allyIndexes.get(i).getFileName().equals(FilePosition.FileNames.DG_HUMANS32)) {
+                availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getX(),
+                        100*100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+            }
+
         }
 
         dg_undead32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_undead32);   // Load bitmap for some enemies
@@ -148,25 +155,24 @@ public class BattleFieldView extends View {
         backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap,currentWidth,currentHeight,false);
 
 
-        enemyList = new ArrayList<>();
 
-        for(int i=0;i<17;i++) {
+        /*for(int i=0;i<17;i++) {
             enemyBitmapTemp = Bitmap.createBitmap(bitmapTemp, 500, 600, 100, 200);
 
         //enemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),0,enemyBitmapTemp,));
         }
 
         alliesAndEnemies = new ArrayList<>();
-
+*/
         rand = new Random();
         for(int i=0;i<1;i++){
-            alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, this));
+  //          alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, this));
 
         }
 
 
-        enemyThread = new animateEnemies(this);
-        enemyThread.execute();
+        //enemyThread = new animateEnemies(this);
+        //enemyThread.execute();
         //Canvas canvas = new Canvas(bitmap);
 
         //drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
@@ -221,7 +227,8 @@ public class BattleFieldView extends View {
 
     public void initializeWeapons()
     {
-        //weapons.put(0, new Weapon(0,0,0,0,0.0,"10"));
+      for(int i=0;i<12;i++)
+        weapons.put(i, new Weapon(null,0,0,0,0,"no",10));
     }
 
     private void initializeEnemyIndexes() {
@@ -258,12 +265,12 @@ public class BattleFieldView extends View {
         //m.setScale(-1,1,50,50);
 
         //canvas.drawBitmap(towerBitmap,m, paint);
-
+/*
         for(int i=alliesAndEnemies.size()-1;i>=0;i--){
             m.setTranslate(alliesAndEnemies.get(i).getPos_x(),alliesAndEnemies.get(i).getPos_y());
             canvas.drawBitmap(alliesAndEnemies.get(i).getAppearance(),m, paint);
         }
-
+*/
 //        canvas.drawBitmap(bitmap2,0,0,paint);
 
     }
@@ -283,7 +290,7 @@ public class BattleFieldView extends View {
         @Override
         protected Void doInBackground(Void... params) {
             int i=0;
-            while(true){
+/*            while(true){
 
             for(Character character:alliesAndEnemies){
 
@@ -305,7 +312,7 @@ public class BattleFieldView extends View {
               if(i%5==0) {
                   alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, context));
               }
-          }
+          }*/
             return null;
         }
 
@@ -313,7 +320,7 @@ public class BattleFieldView extends View {
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             if(values[0]%5000==0)
-                Toast.makeText(context.getContext().getApplicationContext(),alliesAndEnemies.size()+"",Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(context.getContext().getApplicationContext(),alliesAndEnemies.size()+"",Toast.LENGTH_SHORT).show();
             invalidate();
         }
     }
