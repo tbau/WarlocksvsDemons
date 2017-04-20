@@ -14,7 +14,7 @@ public class FilePosition {
     private int row;
     private FileNames fileNames;
 
-    public FilePosition(int row,int col, FileNames fileNames) {
+    public FilePosition(int row, int col, FileNames fileNames) {
         this.col = col;
         this.row = row;
         this.fileNames = fileNames;

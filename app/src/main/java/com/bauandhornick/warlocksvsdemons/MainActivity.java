@@ -1,5 +1,7 @@
 package com.bauandhornick.warlocksvsdemons;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -7,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
@@ -17,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +57,18 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(),v.getId()+" ",Toast.LENGTH_LONG).show();
+                        Dialog dialog = new Dialog(MainActivity.this);
+                        dialog.setContentView(R.layout.character_popup);
+
+                        TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
+                        tv.setText(bfv.allyAttributesList.get(v.getId()).getName());
+                        ImageView im = (ImageView) dialog.findViewById(R.id.ally_bitmap);
+                        im.setImageDrawable(new BitmapDrawable(getResources(),bfv.availableAllyList.get(v.getId()).getAppearance()));
+                        tv = (TextView) dialog.findViewById(R.id.affinity);
+                        tv.setText("Affinity is: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
+                        tv = (TextView) dialog.findViewById(R.id.weakness);
+                        tv.setText("Weakness is: " + bfv.allyAttributesList.get(v.getId()).getWeakness());
+                        dialog.show();
 
                         int i=v.getId()/8;
                         int j=v.getId()%8;
