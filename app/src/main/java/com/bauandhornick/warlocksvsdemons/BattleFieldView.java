@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -125,21 +126,23 @@ public class BattleFieldView extends View {
         dg_classm32Bitmap = Bitmap.createScaledBitmap(dg_classm32Bitmap,800,1100,false);
 
         dg_humans32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_humans32); // Load bitmap for some allies
-        dg_humans32Bitmap = Bitmap.createScaledBitmap(dg_classm32Bitmap,600,700,false);
+        dg_humans32Bitmap = Bitmap.createScaledBitmap(dg_humans32Bitmap,700,600,false);
 
 
 
         for(int i=0;i<12;i++) {
 
+            Log.i("hi",i+"");
+
             if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_CLASSM32)){
-            availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getCol(),
-                    100*allyIndexes.get(i).getRow(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+            availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getCol(),
+                    100*allyIndexes.get(i).getRow(), 100, 100),allyAttributesList.get(i),weapons.get(i),this));
             }
             else if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_HUMANS32)) {
-                availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getCol(),
-                        100*allyIndexes.get(i).getRow(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
-            }
+                availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getCol(),
+                        100*allyIndexes.get(i).getRow(), 100, 100),allyAttributesList.get(i),weapons.get(i),this));
 
+            }
 
         }
 
@@ -166,14 +169,35 @@ public class BattleFieldView extends View {
         alliesAndEnemies = new ArrayList<>();
 */
         rand = new Random();
-        for(int i=0;i<1;i++){
-  //          alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, this));
+
+
+        for(int i=0;i<17;i++) {
+
+            Log.i("enemy",i+"");
+
+            if(enemyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_UNIQUES32)){
+                availableEnemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_uniques32Bitmap, 100*enemyIndexes.get(i).getCol(),
+                        100*enemyIndexes.get(i).getRow(), 100, 100),enemyAttributesList.get(i),this));
+            }
+            else if(enemyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_UNDEAD32)){
+                availableEnemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_undead32Bitmap, 100*enemyIndexes.get(i).getCol(),
+                        100*enemyIndexes.get(i).getRow(), 100, 100),enemyAttributesList.get(i),this));
+            }
+
+            else if(enemyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_MONSTER632)){
+                availableEnemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_monster632Bitmap, 100*enemyIndexes.get(i).getCol(),
+                        100*enemyIndexes.get(i).getRow(), 100, 100),enemyAttributesList.get(i),this));
+            }
+
+            else if(enemyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_CLASSM32)){
+                availableEnemyList.add(new Enemy(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_classm32Bitmap, 100*enemyIndexes.get(i).getCol(),
+                        100*enemyIndexes.get(i).getRow(), 100, 100),enemyAttributesList.get(i),this));
+            }
 
         }
 
-
-        //enemyThread = new animateEnemies(this);
-        //enemyThread.execute();
+        enemyThread = new animateEnemies(this);
+        enemyThread.execute();
         //Canvas canvas = new Canvas(bitmap);
 
         //drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
@@ -191,19 +215,24 @@ public class BattleFieldView extends View {
         enemyAttributesList.put(2,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.ICE,300,900,500)); //Skelton with double swords;
 
         enemyAttributesList.put(3,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,400,1200,800)); //Green orc with sheild and axe
-        enemyAttributesList.put(5,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,500,1500,1000)); //Green orc yellow helmet and sword
-        enemyAttributesList.put(6,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,800,1800,1200)); //Green orc with brown coat and sword
+        enemyAttributesList.put(4,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,500,1500,1000)); //Green orc yellow helmet and sword
+        enemyAttributesList.put(5,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,800,1800,1200)); //Green orc with brown coat and sword
 
-        enemyAttributesList.put(7,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.FIRE,1000,2000,1500)); //Red troll golden shield and sword
-        enemyAttributesList.put(8,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.FIRE,1000,2000,1500)); //Red troll with sword
+        enemyAttributesList.put(6,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,800,1800,1200)); //Troll with Shield & Battle Axe
+        enemyAttributesList.put(7,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,800,1800,1200)); //Troll with cross shield and sword
+        enemyAttributesList.put(8,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,800,1800,1200)); //Troll with cross shield & mace
 
-        enemyAttributesList.put(9,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.LIGHTNING,1200,2000,1600)); //Red floating skeleton
-        enemyAttributesList.put(10,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,1200,2000,1600)); //Purple floating skeleton
-        enemyAttributesList.put(11,new EnemyAttributes(0, Character.Element.ICE, Character.Element.FIRE,1200,2000,1600)); //Black floating skeleton
 
-        enemyAttributesList.put(12,new EnemyAttributes(0, Character.Element.ICE, Character.Element.FIRE,1600,2500,1800)); //Fire fairy
-        enemyAttributesList.put(12,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.LIGHTNING,1600,2500,1800)); //Lightning fairy
-        enemyAttributesList.put(12,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,1600,2500,1800)); //Ice fairy
+        enemyAttributesList.put(9,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.FIRE,1000,2000,1500)); //Red troll golden shield and sword
+        enemyAttributesList.put(10,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.FIRE,1000,2000,1500)); //Red troll with sword
+
+        enemyAttributesList.put(11,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.LIGHTNING,1200,2000,1600)); //Red floating skeleton
+        enemyAttributesList.put(12,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,1200,2000,1600)); //Purple floating skeleton
+        enemyAttributesList.put(13,new EnemyAttributes(0, Character.Element.ICE, Character.Element.FIRE,1200,2000,1600)); //Black floating skeleton
+
+        enemyAttributesList.put(14,new EnemyAttributes(0, Character.Element.ICE, Character.Element.FIRE,1600,2500,1800)); //Fire fairy
+        enemyAttributesList.put(15,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.LIGHTNING,1600,2500,1800)); //Lightning fairy
+        enemyAttributesList.put(16,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,1600,2500,1800)); //Ice fairy
 
     }
     private void initializeAllyAttributes() {
@@ -236,17 +265,17 @@ public class BattleFieldView extends View {
         enemyIndexes.put(0, new FilePosition(5, 3, FilePosition.FileNames.DG_UNDEAD32));
         enemyIndexes.put(1, new FilePosition(5, 6, FilePosition.FileNames.DG_UNDEAD32));
         enemyIndexes.put(2, new FilePosition(5, 5, FilePosition.FileNames.DG_UNDEAD32));
-        enemyIndexes.put(3, new FilePosition(10, 7, FilePosition.FileNames.DG_UNDEAD32));
-        enemyIndexes.put(4, new FilePosition(10, 3, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(3, new FilePosition(10, 7, FilePosition.FileNames.DG_CLASSM32));
+        enemyIndexes.put(4, new FilePosition(10, 3, FilePosition.FileNames.DG_CLASSM32));
         enemyIndexes.put(5, new FilePosition(10, 5, FilePosition.FileNames.DG_CLASSM32));
         enemyIndexes.put(6, new FilePosition(1, 2, FilePosition.FileNames.DG_UNIQUES32));
         enemyIndexes.put(7, new FilePosition(1, 5, FilePosition.FileNames.DG_UNIQUES32));
         enemyIndexes.put(8, new FilePosition(1, 6, FilePosition.FileNames.DG_UNIQUES32));
         enemyIndexes.put(9, new FilePosition(1, 4, FilePosition.FileNames.DG_UNIQUES32));
         enemyIndexes.put(10, new FilePosition(4, 0, FilePosition.FileNames.DG_MONSTER632));
-        enemyIndexes.put(11, new FilePosition(1, 1, FilePosition.FileNames.DG_MONSTER632));
-        enemyIndexes.put(12, new FilePosition(1, 3, FilePosition.FileNames.DG_MONSTER632));
-        enemyIndexes.put(13, new FilePosition(1, 6, FilePosition.FileNames.DG_MONSTER632));
+        enemyIndexes.put(11, new FilePosition(1, 1, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(12, new FilePosition(1, 3, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(13, new FilePosition(1, 6, FilePosition.FileNames.DG_UNDEAD32));
         enemyIndexes.put(14, new FilePosition(3, 6, FilePosition.FileNames.DG_UNIQUES32));
         enemyIndexes.put(15, new FilePosition(3, 7, FilePosition.FileNames.DG_UNIQUES32));
         enemyIndexes.put(16, new FilePosition(4, 7, FilePosition.FileNames.DG_UNIQUES32));
@@ -256,7 +285,7 @@ public class BattleFieldView extends View {
         allyIndexes.put(0, new FilePosition(5, 1, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(1, new FilePosition(0, 2, FilePosition.FileNames.DG_HUMANS32));
         allyIndexes.put(2, new FilePosition(5, 2, FilePosition.FileNames.DG_CLASSM32));
-        allyIndexes.put(3, new FilePosition(3, 3, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(3, new FilePosition(3, 2, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(4, new FilePosition(8, 2, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(5, new FilePosition(2, 3, FilePosition.FileNames.DG_HUMANS32));
         allyIndexes.put(6, new FilePosition(2, 2, FilePosition.FileNames.DG_CLASSM32));
@@ -312,7 +341,7 @@ public class BattleFieldView extends View {
      //   currentWidth = w;
      //   currentHeight = h;
     }
-    private class animateEnemies extends AsyncTask<Void,Integer,Void>{
+    private class animateEnemies extends AsyncTask<Void,Double,Void>{
         private BattleFieldView context;
 
         public animateEnemies(BattleFieldView context) {
@@ -321,18 +350,20 @@ public class BattleFieldView extends View {
 
         @Override
         protected Void doInBackground(Void... params) {
-            int i=0;
-/*            while(true){
+            double i=0;
+            int k=0;
+            while(true){
 
-            for(Character character:alliesAndEnemies){
+            for(int j=0; j<enemiesInBattle.size();j++){
 
-             character.animate();
-
+             enemiesInBattle.get(j).animate();
+                //if(enemiesInBattle.get(i).getPos_x()>context.currentWidth||enemiesInBattle.get(i).getPos_x()<0)
+            // postInvalidate();
             }
                 publishProgress(i);
 
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -340,19 +371,30 @@ public class BattleFieldView extends View {
 
                 if(false)
                   break;
-              i++;
-              if(i%5==0) {
-                  alliesAndEnemies.add(new Ally(0, (int) (currentHeight * 2 / 13.0), bitMap[rand.nextInt(10)][rand.nextInt(7)],null , null, context));
+                i+=0.2;
+              if(i>=1) {
+                  try {
+                      Enemy enemy =  (Enemy)availableEnemyList.get(k).clone();
+
+                  enemiesInBattle.add(enemy);
+                  } catch (CloneNotSupportedException e) {
+                      e.printStackTrace();
+                  }
+                  k++;
+                 i=0;
+                  if(k==17)
+                      k=0;
               }
-          }*/
+          }
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
+        protected void onProgressUpdate(Double... values) {
             super.onProgressUpdate(values);
-            if(values[0]%5000==0)
+            //if(values[0]%5000==0)
              //   Toast.makeText(context.getContext().getApplicationContext(),alliesAndEnemies.size()+"",Toast.LENGTH_SHORT).show();
+            Log.i("enemy: ",values[0]+"");
             invalidate();
         }
     }

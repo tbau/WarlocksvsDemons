@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
             bitmap = bfv.availableAllyList.get(i).getAppearance();
                 bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
             im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
-            im.setBackgroundColor(0xffffffff);
-
+            im.setBackgroundColor(0xFF222222);
             im.setId(k);
                 im.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -71,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
                         tv.setText("Weakness is: " + bfv.allyAttributesList.get(v.getId()).getWeakness());
                         dialog.show();
 
-                        int i=v.getId()/8;
-                        int j=v.getId()%8;
                         //bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
                         bfv.invalidate();
 
