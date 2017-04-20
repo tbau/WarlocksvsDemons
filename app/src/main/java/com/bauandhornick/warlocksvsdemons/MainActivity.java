@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
                         tv.setText("Weakness is: " + bfv.allyAttributesList.get(v.getId()).getWeakness());
                         dialog.show();
 
-                        int i=v.getId()/8;
-                        int j=v.getId()%8;
                         //bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
                         bfv.invalidate();
 
