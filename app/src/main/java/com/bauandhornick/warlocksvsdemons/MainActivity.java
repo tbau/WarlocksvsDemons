@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout ll = (LinearLayout)findViewById(R.id.scroll);
         ImageView im = new ImageView(getApplicationContext());
-        im.setImageResource(R.drawable.torremagica5);
+
 
         bfv = (BattleFieldView)findViewById(R.id.BattleFieldView);
         HorizontalScrollView hsv = (HorizontalScrollView)findViewById(R.id.scrollview);
@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         hsv.setLayoutParams(params);
 
         int k=0;
-        for(int i = 0;i<11;i++){
-            for(int j=0;j<8;j++){
+        for(int i = 0;i<12;i++){
+
             im = new ImageView(getApplicationContext());
-            bitmap = bfv.bitMap[i][j];
+            bitmap = bfv.availableAllyList.get(i).getAppearance();
                 bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
             im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
             im.setBackgroundColor(0xffffffff);
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
                         int i=v.getId()/8;
                         int j=v.getId()%8;
-                        bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
+                        //bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
                         bfv.invalidate();
 
                     }
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             ll.addView(im);
             }
 
-    }}
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

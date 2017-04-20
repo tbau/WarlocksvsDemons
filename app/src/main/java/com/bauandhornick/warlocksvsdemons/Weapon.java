@@ -17,20 +17,25 @@ public class Weapon {
     private double rechargeRate;
     private String areaOfEffect;
 
-    public Weapon(Bitmap weaponAppearance, int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate, String areaOfEffect) {
+
+    public Weapon(Bitmap weaponAppearance, int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate, String areaOfEffect, int damage) {
+
         this.weaponAppearance = weaponAppearance;
         this.weaponRange = weaponRange;
         this.weaponAffinity = weaponAffinity;
         this.weaponSpeed = weaponSpeed;
         this.rechargeRate = rechargeRate;
         this.areaOfEffect = areaOfEffect;
+        this.damage = damage;
     }
 
     public Bitmap getWeaponAppearance() {
         return weaponAppearance;
     }
 
-    public void setTypeOfWeapon(Bitmap weaponAppearance) { this.weaponAppearance = weaponAppearance; }
+    public void setWeaponAppearance(Bitmap weaponAppearance) {
+        this.weaponAppearance = weaponAppearance;
+    }
 
     public int getWeaponRange() {
         return weaponRange;
@@ -68,6 +73,14 @@ public class Weapon {
 
     public void setAreaOfEffect(String areaOfEffect) {
         this.areaOfEffect = areaOfEffect;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
 }
