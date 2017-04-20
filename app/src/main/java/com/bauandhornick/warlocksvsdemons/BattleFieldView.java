@@ -131,13 +131,13 @@ public class BattleFieldView extends View {
 
         for(int i=0;i<12;i++) {
 
-            if(allyIndexes.get(i).getFileName().equals(FilePosition.FileNames.DG_CLASSM32)){
-            availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getX(),
-                    100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+            if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_CLASSM32)){
+            availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getCol(),
+                    100*allyIndexes.get(i).getRow(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
             }
-            else if(allyIndexes.get(i).getFileName().equals(FilePosition.FileNames.DG_HUMANS32)) {
-                availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getX(),
-                        100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+            else if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_HUMANS32)) {
+                availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getCol(),
+                        100*allyIndexes.get(i).getRow(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
             }
 
 
@@ -233,16 +233,38 @@ public class BattleFieldView extends View {
     }
 
     private void initializeEnemyIndexes() {
-
-
-
+        enemyIndexes.put(0, new FilePosition(5, 3, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(1, new FilePosition(5, 6, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(2, new FilePosition(5, 5, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(3, new FilePosition(10, 7, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(4, new FilePosition(10, 3, FilePosition.FileNames.DG_UNDEAD32));
+        enemyIndexes.put(5, new FilePosition(10, 5, FilePosition.FileNames.DG_CLASSM32));
+        enemyIndexes.put(6, new FilePosition(1, 2, FilePosition.FileNames.DG_UNIQUES32));
+        enemyIndexes.put(7, new FilePosition(1, 5, FilePosition.FileNames.DG_UNIQUES32));
+        enemyIndexes.put(8, new FilePosition(1, 6, FilePosition.FileNames.DG_UNIQUES32));
+        enemyIndexes.put(9, new FilePosition(1, 4, FilePosition.FileNames.DG_UNIQUES32));
+        enemyIndexes.put(10, new FilePosition(4, 0, FilePosition.FileNames.DG_MONSTER632));
+        enemyIndexes.put(11, new FilePosition(1, 1, FilePosition.FileNames.DG_MONSTER632));
+        enemyIndexes.put(12, new FilePosition(1, 3, FilePosition.FileNames.DG_MONSTER632));
+        enemyIndexes.put(13, new FilePosition(1, 6, FilePosition.FileNames.DG_MONSTER632));
+        enemyIndexes.put(14, new FilePosition(3, 6, FilePosition.FileNames.DG_UNIQUES32));
+        enemyIndexes.put(15, new FilePosition(3, 7, FilePosition.FileNames.DG_UNIQUES32));
+        enemyIndexes.put(16, new FilePosition(4, 7, FilePosition.FileNames.DG_UNIQUES32));
     }
+
     private void initializeAllyIndexes() {
         allyIndexes.put(0, new FilePosition(5, 6, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(1, new FilePosition(0, 2, FilePosition.FileNames.DG_HUMANS32));
         allyIndexes.put(2, new FilePosition(5, 2, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(3, new FilePosition(3, 3, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(4, new FilePosition(8, 2, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(5, new FilePosition(2, 3, FilePosition.FileNames.DG_HUMANS32));
+        allyIndexes.put(6, new FilePosition(2, 2, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(7, new FilePosition(1, 2, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(8, new FilePosition(4, 2, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(9, new FilePosition(2, 4, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(10, new FilePosition(1, 4, FilePosition.FileNames.DG_CLASSM32));
+        allyIndexes.put(11, new FilePosition(4, 4, FilePosition.FileNames.DG_CLASSM32));
     }
 
     @Override
@@ -258,6 +280,15 @@ public class BattleFieldView extends View {
               // canvas.drawBitmap(bitMap[i][j],j*100,i*100,paint);
 
         //}
+
+        for (Ally ally : alliesInBattle) {
+            canvas.drawBitmap(ally.getAppearance(),ally.getPos_x(),ally.getPos_y(),paint);
+        }
+
+        for(Enemy enemy: enemiesInBattle){
+            canvas.drawBitmap(enemy.getAppearance(),enemy.getPos_x(),enemy.getPos_y(),paint);
+        }
+
         Matrix m = new Matrix();
 
 
