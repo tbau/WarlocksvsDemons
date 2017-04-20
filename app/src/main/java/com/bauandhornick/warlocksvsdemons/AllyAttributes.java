@@ -8,10 +8,15 @@ import android.graphics.Bitmap;
 
 public class AllyAttributes {
 
+    private String name;
     private int requireFlip;
     private Character.Element weakness;
     private Character.Element affinity;
     private int costToBuy;
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 
     public int getRequireFlip() {
         return requireFlip;

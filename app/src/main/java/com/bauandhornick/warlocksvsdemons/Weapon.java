@@ -17,7 +17,9 @@ public class Weapon {
     private double rechargeRate;
     private String areaOfEffect;
 
+
     public Weapon(Bitmap weaponAppearance, int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate, String areaOfEffect, int damage) {
+
         this.weaponAppearance = weaponAppearance;
         this.weaponRange = weaponRange;
         this.weaponAffinity = weaponAffinity;
