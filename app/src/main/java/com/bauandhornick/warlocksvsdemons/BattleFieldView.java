@@ -133,12 +133,13 @@ public class BattleFieldView extends View {
 
             if(allyIndexes.get(i).getFileName().equals(FilePosition.FileNames.DG_CLASSM32)){
             availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getX(),
-                    100*100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+                    100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
             }
             else if(allyIndexes.get(i).getFileName().equals(FilePosition.FileNames.DG_HUMANS32)) {
                 availableAllyList.add(new Ally(0,0,Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getX(),
-                        100*100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
+                        100*allyIndexes.get(i).getY(), 100, 1000 / 11),allyAttributesList.get(i),weapons.get(i),this));
             }
+
 
         }
 
