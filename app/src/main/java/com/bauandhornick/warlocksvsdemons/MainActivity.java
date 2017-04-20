@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             bitmap = bfv.availableAllyList.get(i).getAppearance();
                 bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
             im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
-            im.setBackgroundColor(0xffffffff);
+            im.setBackgroundColor(0xFF222222);
             im.setId(k);
                 im.setOnClickListener(new View.OnClickListener() {
                     @Override
