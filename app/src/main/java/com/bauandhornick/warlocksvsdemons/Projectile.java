@@ -7,14 +7,16 @@ package com.bauandhornick.warlocksvsdemons;
 public class Projectile {
     private int x;
     private int y;
-    private int velocity_y;
+    private int vel_x;
+    private int vel_y;
+    private Weapon weapon;
 
-    public Projectile(int x, int y, int velocity_y, int velocity_x, Weapon weapon) {
+    public Projectile(int x, int y, int vel_x, int vel_y, Weapon weapon) {
         this.x = x;
         this.y = y;
-        this.velocity_y = velocity_y;
-        this.velocity_x = velocity_x;
-        this.weapon = weapon;
+        this.vel_x = vel_x;
+        this.vel_y = vel_y;
+        this.weapon=weapon;
     }
 
     public int getX() {
@@ -33,31 +35,24 @@ public class Projectile {
         this.y = y;
     }
 
-    public int getVelocity_y() {
-        return velocity_y;
+    public int getVel_x() {
+        return vel_x;
     }
 
-    public void setVelocity_y(int velocity_y) {
-        this.velocity_y = velocity_y;
+    public void setVel_x(int vel_x) {
+        this.vel_x = vel_x;
     }
 
-    public int getVelocity_x() {
-        return velocity_x;
+    public int getVel_y() {
+        return vel_y;
     }
 
-    public void setVelocity_x(int velocity_x) {
-        this.velocity_x = velocity_x;
+    public void setVel_y(int vel_y) {
+        this.vel_y = vel_y;
     }
 
-    public Weapon getWeapon() {
-        return weapon;
-    }
+    public Weapon getWeapon() {return weapon;}
 
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
-    }
-
-    private int velocity_x;
-    private Weapon weapon;
+    public void setWeapon(Weapon weapon) {this.weapon = weapon;}
 
 }
