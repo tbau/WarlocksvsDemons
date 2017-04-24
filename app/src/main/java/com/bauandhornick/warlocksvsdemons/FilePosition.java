@@ -7,7 +7,7 @@ package com.bauandhornick.warlocksvsdemons;
 public class FilePosition {
 
     enum FileNames{
-        DG_CLASSM32, DG_HUMANS32, DG_UNDEAD32, DG_UNIQUES32, DG_MONSTER632
+        DG_CLASSM32, DG_HUMANS32, DG_UNDEAD32, DG_UNIQUES32, DG_MONSTER632,DG_EFFECTS32
     }
 
     private int col;

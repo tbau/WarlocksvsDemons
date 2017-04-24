@@ -6,19 +6,21 @@ import android.graphics.Bitmap;
  * Created by Alex Hornick on 4/6/2017.
  */
 
-public class Weapon {
+public class Weapon implements Cloneable{
+
 
 
     private Bitmap weaponAppearance;
     private int weaponRange;
-    private int weaponAffinity;
+    private Character.Element weaponAffinity;
     private int weaponSpeed;
     private int damage;
     private double rechargeRate;
     private String areaOfEffect;
 
 
-    public Weapon(Bitmap weaponAppearance, int weaponRange, int weaponAffinity, int weaponSpeed, double rechargeRate, String areaOfEffect, int damage) {
+    public Weapon(Bitmap weaponAppearance, Character.Element weaponAffinity, int damage,
+                  int weaponRange, double rechargeRate, int weaponSpeed,  String areaOfEffect) {
 
         this.weaponAppearance = weaponAppearance;
         this.weaponRange = weaponRange;
@@ -45,11 +47,11 @@ public class Weapon {
         this.weaponRange = weaponRange;
     }
 
-    public int getWeaponAffinity() {
+    public Character.Element getWeaponAffinity() {
         return weaponAffinity;
     }
 
-    public void setWeaponAffinity(int weaponAffinity) {
+    public void setWeaponAffinity(Character.Element weaponAffinity) {
         this.weaponAffinity = weaponAffinity;
     }
 

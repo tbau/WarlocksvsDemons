@@ -1,5 +1,6 @@
 package com.bauandhornick.warlocksvsdemons;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +19,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,16 +49,18 @@ public class BattleFieldView extends View {
 
     HashMap<Integer,EnemyAttributes> enemyAttributesList;
     HashMap<Integer,AllyAttributes>  allyAttributesList;
-    HashMap<Integer, Weapon> weapons;
 
     HashMap <Integer, FilePosition> enemyIndexes;
     HashMap <Integer, FilePosition> allyIndexes;
+    HashMap <Integer, FilePosition> weaponIndexes;
 
     List <Enemy> availableEnemyList; //Holds list of enemies to choose from when creating a new enemy on screen
     List <Ally>  availableAllyList; //Holds list of allies to choose from when creating a new ally on screen
+    List <Weapon> weaponList;
 
     List <Enemy> enemiesInBattle;  // Holds list of enemies on screen
     List <Ally> alliesInBattle;    // Holds list of allies on screen
+    List <Projectile> projectileList;
 
     Bitmap dg_classm32Bitmap;   // Bitmap to hold dg_class32 images for allies and some enemies
     Bitmap dg_humans32Bitmap;   // Bitmap to hold dg_humans32 images for allies
@@ -60,6 +68,8 @@ public class BattleFieldView extends View {
     Bitmap dg_undead32Bitmap;   // Bitmap to hold dg_undead32 images for enemies
     Bitmap dg_uniques32Bitmap;  // Bitmap to hold dg_uniques32 images for enemies
     Bitmap dg_monster632Bitmap; // Bitmap to hold dg_monster632 images for enemies
+
+    Bitmap dg_effects32Bitmap; // Bitmap to hold dg_monster632 images for enemies
 
     Bitmap backgroundBitmap;  // Holds the bitmap for the background
 
@@ -100,20 +110,23 @@ public class BattleFieldView extends View {
 
         enemyAttributesList = new HashMap<>();
         allyAttributesList = new HashMap<>();
-        weapons = new HashMap<>();
+        weaponIndexes = new HashMap<>();
 
         initializeEnemyAttributes();
         initializeAllyAttributes();
-        initializeWeapons();
 
         enemyIndexes = new HashMap<>();
         allyIndexes = new HashMap<>();
+        weaponIndexes=new HashMap<>();
 
         initializeEnemyIndexes();
         initializeAllyIndexes();
 
         availableEnemyList = new ArrayList<>();
         availableAllyList = new ArrayList<>();
+        weaponList = new ArrayList<>();
+        projectileList = new ArrayList<>();
+
 
         enemiesInBattle = new ArrayList<>();
         alliesInBattle = new ArrayList<>();
@@ -128,21 +141,42 @@ public class BattleFieldView extends View {
         dg_humans32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_humans32); // Load bitmap for some allies
         dg_humans32Bitmap = Bitmap.createScaledBitmap(dg_humans32Bitmap,700,600,false);
 
+        dg_effects32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_effects32); // Load bitmap for some allies
+        dg_effects32Bitmap = Bitmap.createScaledBitmap(dg_effects32Bitmap,1200,1100,false);
 
+        initializeWeaponIndexes();
+        initializeWeapons();
+
+        Matrix flipMatrix = new Matrix();
+        flipMatrix.setScale(-1,1);
 
         for(int i=0;i<12;i++) {
 
             Log.i("hi",i+"");
 
             if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_CLASSM32)){
-            availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_classm32Bitmap, 100*allyIndexes.get(i).getCol(),
-                    100*allyIndexes.get(i).getRow(), 100, 100),allyAttributesList.get(i),weapons.get(i),this));
+                Bitmap temp = Bitmap.createBitmap(dg_classm32Bitmap, 100 * allyIndexes.get(i).getCol(),
+                        100 * allyIndexes.get(i).getRow(), 100, 100);
+
+                if(allyAttributesList.get(i).getRequireFlip()==1) {
+                temp = Bitmap.createBitmap(temp, 0,
+                        0,100,100,flipMatrix,false);
+                }
+
+            availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),temp,allyAttributesList.get(i),weaponList.get(i),this));
             }
             else if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_HUMANS32)) {
-                availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),Bitmap.createBitmap(dg_humans32Bitmap, 100*allyIndexes.get(i).getCol(),
-                        100*allyIndexes.get(i).getRow(), 100, 100),allyAttributesList.get(i),weapons.get(i),this));
+
+                Bitmap temp = Bitmap.createBitmap(dg_humans32Bitmap, 100 * allyIndexes.get(i).getCol(),
+                        100 * allyIndexes.get(i).getRow(), 100, 100);
+
+                if(allyAttributesList.get(i).getRequireFlip()==1) {
+                    temp = Bitmap.createBitmap(temp,0,0,100,100,flipMatrix,false);
+                }
+                availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),temp,allyAttributesList.get(i),weaponList.get(i),this));
 
             }
+
 
         }
 
@@ -196,6 +230,7 @@ public class BattleFieldView extends View {
 
         }
 
+        projectileList.add(new Projectile(100,200,1,1,weaponList.get(0)));
         enemyThread = new animateEnemies(this);
         enemyThread.execute();
         //Canvas canvas = new Canvas(bitmap);
@@ -239,8 +274,8 @@ public class BattleFieldView extends View {
         allyAttributesList = new HashMap<>();
 
         //Name, requireFlip, Weakness, Affinity, cost
-        allyAttributesList.put(0, new AllyAttributes("Novice Fire Mage", 0, Character.Element.LIGHTNING, Character.Element.FIRE,0));
-        allyAttributesList.put(1, new AllyAttributes("Novice Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,0));
+        allyAttributesList.put(0, new AllyAttributes("Novice Fire Mage", 1, Character.Element.LIGHTNING, Character.Element.FIRE,0));
+        allyAttributesList.put(1, new AllyAttributes("Novice Ice Mage", 1, Character.Element.FIRE, Character.Element.ICE,0));
         allyAttributesList.put(2, new AllyAttributes("Novice Lightning Mage", 0, Character.Element.ICE, Character.Element.LIGHTNING,0));
         allyAttributesList.put(3, new AllyAttributes("Apprentice Fire Mage", 0, Character.Element.LIGHTNING, Character.Element.FIRE,0));
         allyAttributesList.put(4, new AllyAttributes("Apprentice Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,0));
@@ -254,11 +289,64 @@ public class BattleFieldView extends View {
 
 
     }
+    public void initializeWeaponIndexes(){
+        weaponIndexes.put(0,new FilePosition(4,0, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(1,new FilePosition(4,3, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(2,new FilePosition(4,6, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(3,new FilePosition(8,0, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(4,new FilePosition(8,5, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(5,new FilePosition(8,3, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(6,new FilePosition(8,6, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(7,new FilePosition(8,11, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(8,new FilePosition(8,9, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(9,new FilePosition(5,0, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(10,new FilePosition(5,3, FilePosition.FileNames.DG_EFFECTS32));
+        weaponIndexes.put(11,new FilePosition(5,6, FilePosition.FileNames.DG_EFFECTS32));
+    }
 
     public void initializeWeapons()
     {
-      for(int i=0;i<12;i++)
-        weapons.put(i, new Weapon(null,0,0,0,0,"no",10));
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(0).getCol(),
+                  100*weaponIndexes.get(0).getRow(),100,100), Character.Element.FIRE,125,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(1).getCol(),
+                100*weaponIndexes.get(1).getRow(),100,100), Character.Element.ICE,125,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(2).getCol(),
+                100*weaponIndexes.get(2).getRow(),100,100), Character.Element.LIGHTNING,125,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(3).getCol(),
+                100*weaponIndexes.get(3).getRow(),100,100), Character.Element.FIRE,250,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(4).getCol(),
+                100*weaponIndexes.get(4).getRow(),100,100), Character.Element.ICE,250,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(5).getCol(),
+                100*weaponIndexes.get(5).getRow(),100,100), Character.Element.LIGHTNING,250,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(6).getCol(),
+                100*weaponIndexes.get(6).getRow(),100,100), Character.Element.FIRE,500,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(7).getCol(),
+                100*weaponIndexes.get(7).getRow(),100,100), Character.Element.ICE,500,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(8).getCol(),
+                100*weaponIndexes.get(8).getRow(),100,100), Character.Element.LIGHTNING,500,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(9).getCol(),
+                100*weaponIndexes.get(9).getRow(),100,100), Character.Element.FIRE,1000,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(10).getCol(),
+                100*weaponIndexes.get(10).getRow(),100,100), Character.Element.ICE,1000,0,0,10,"no"));
+
+        weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(11).getCol(),
+                100*weaponIndexes.get(11).getRow(),100,100), Character.Element.LIGHTNING,1000,0,0,10,"no"));
+
+     /* Bitmap weaponAppearance, Character.Element weaponAffinity, int damage, int weaponRange,
+     double rechargeRate, int weaponSpeed,  String areaOfEffect)
+       */
+
+
     }
 
     private void initializeEnemyIndexes() {
@@ -300,15 +388,7 @@ public class BattleFieldView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        //canvas.drawPaint(paint);
-
         canvas.drawBitmap(backgroundBitmap,0,0,paint);
-
-        //for(int i=0;i<11;i++) {
-            //for (int j = 0; j < 8; j++)
-              // canvas.drawBitmap(bitMap[i][j],j*100,i*100,paint);
-
-        //}
 
         for (Ally ally : alliesInBattle) {
             canvas.drawBitmap(ally.getAppearance(),ally.getPos_x(),ally.getPos_y(),paint);
@@ -318,6 +398,9 @@ public class BattleFieldView extends View {
             canvas.drawBitmap(enemy.getAppearance(),enemy.getPos_x(),enemy.getPos_y(),paint);
         }
 
+        for(Projectile projectile:projectileList){
+            canvas.drawBitmap(projectile.getWeapon().getWeaponAppearance(),projectile.getX(),projectile.getY(),paint);
+        }
         Matrix m = new Matrix();
 
 
@@ -373,13 +456,12 @@ public class BattleFieldView extends View {
                   break;
                 i+=0.2;
               if(i>=1) {
-                  try {
-                      Enemy enemy =  (Enemy)availableEnemyList.get(k).clone();
+
+                  Enemy enemy= new Enemy(availableEnemyList.get(k));
 
                   enemiesInBattle.add(enemy);
-                  } catch (CloneNotSupportedException e) {
-                      e.printStackTrace();
-                  }
+
+
                   k++;
                  i=0;
                   if(k==17)
@@ -398,7 +480,4 @@ public class BattleFieldView extends View {
             invalidate();
         }
     }
-
-
-
 }
