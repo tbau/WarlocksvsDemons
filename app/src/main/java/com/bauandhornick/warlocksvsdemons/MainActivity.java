@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
                         tv.setText("Affinity is: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
                         tv = (TextView) dialog.findViewById(R.id.weakness);
                         tv.setText("Weakness is: " + bfv.allyAttributesList.get(v.getId()).getWeakness());
+                        tv = (TextView) dialog.findViewById(R.id.costToBuy);
+                        tv.setText("Cost to buy is: " + bfv.allyAttributesList.get(v.getId()).getCostToBuy());
+                        Button b = (Button) dialog.findViewById(R.id.addButton);
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
+                        
                         dialog.show();
 
                         //bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);

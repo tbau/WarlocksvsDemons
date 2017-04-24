@@ -2,14 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="15dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ally_name"
         android:textAlignment="center"
-        android:textSize="24sp" />
+        android:textSize="18sp"
+        android:fontFamily="casual" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -20,10 +22,26 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/affinity" />
+        android:id="@+id/affinity"
+        android:fontFamily="casual" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/weakness" />
+        android:id="@+id/weakness"
+        android:fontFamily="casual" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/costToBuy"
+        android:fontFamily="casual" />
+
+    <Button
+        android:text="Add to Battle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addButton"
+        android:background="@android:color/holo_green_light"
+        android:fontFamily="casual" />
 </LinearLayout>
