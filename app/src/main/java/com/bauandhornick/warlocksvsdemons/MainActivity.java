@@ -45,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
         params.width = bfv.currentWidth;
         hsv.setLayoutParams(params);
 
+
+        final Button b = (Button) findViewById(R.id.start_button);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bfv.enemyThread==null){
+                    bfv.enemyThread = bfv.new animateEnemies(bfv);
+                    bfv.enemyThread.execute();
+                }}
+        });
         int k=0;
         for(int i = 0;i<12;i++){
 
@@ -57,32 +67,52 @@ public class MainActivity extends AppCompatActivity {
                 im.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),v.getId()+" ",Toast.LENGTH_LONG).show();
-                        Dialog dialog = new Dialog(MainActivity.this);
+                        //Toast.makeText(getApplicationContext(),v.getId()+" ",Toast.LENGTH_LONG).show();
+                        final Dialog dialog = new Dialog(MainActivity.this);
                         dialog.setContentView(R.layout.character_popup);
 
+                        dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
                         TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
                         tv.setText(bfv.allyAttributesList.get(v.getId()).getName());
                         ImageView im = (ImageView) dialog.findViewById(R.id.ally_bitmap);
                         im.setImageDrawable(new BitmapDrawable(getResources(),bfv.availableAllyList.get(v.getId()).getAppearance()));
                         tv = (TextView) dialog.findViewById(R.id.affinity);
-                        tv.setText("Affinity is: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
+                        tv.setText("AFFINITY: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
                         tv = (TextView) dialog.findViewById(R.id.weakness);
-                        tv.setText("Weakness is: " + bfv.allyAttributesList.get(v.getId()).getWeakness());
+                        tv.setText("DAMAGE: " + bfv.weaponList.get(v.getId()).getDamage());
                         tv = (TextView) dialog.findViewById(R.id.costToBuy);
-                        tv.setText("Cost to buy is: " + bfv.allyAttributesList.get(v.getId()).getCostToBuy());
-                        Button b = (Button) dialog.findViewById(R.id.addButton);
+                        if(bfv.bm.getRound()>1)
+                            tv.setText("COST: " + (int)(bfv.allyAttributesList.get(v.getId()).getCostToBuy()*(((bfv.bm.getRound()+5)/5.0))));
+                        else
+                          tv.setText("COST: " + bfv.allyAttributesList.get(v.getId()).getCostToBuy());
+
+
+
+                        Button b = (Button) dialog.findViewById(R.id.cancel_button);
+                        //b.setWidth((int)(dialog.getWindow().getDecorView().getWidth()/2.0));
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        final int id = v.getId();
+                        b = (Button) dialog.findViewById(R.id.addButton);
+                        //b.setWidth((int)(dialog.getWindow().getDecorView().getWidth()/2.0));
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
 
+                                bfv.selected=id;
+                                bfv.invalidate();
+                                dialog.cancel();
                             }
                         });
-                        
                         dialog.show();
 
                         //bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
-                        bfv.invalidate();
+                        //bfv.invalidate();
 
                     }
                 });

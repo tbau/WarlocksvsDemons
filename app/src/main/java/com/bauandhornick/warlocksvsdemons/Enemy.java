@@ -12,12 +12,16 @@ public class Enemy extends Character {
     EnemyAttributes ea;
     private BattleFieldView context;
     boolean [] atEdge;
+    int health;
+    int speedX;
+    int speedY;
 
     public Enemy(Enemy enemy){
         super(0, (int) (enemy.getContext().currentHeight*2/13.0),enemy.getAppearance());
         this.ea = enemy.getEa();
         this.context = enemy.getContext();
         atEdge = new boolean[13];
+        this.health = ea.getHealth();
     }
 
     public Enemy(int pos_x, int pos_y, Bitmap appearance, EnemyAttributes ea, BattleFieldView context) {
@@ -58,12 +62,12 @@ public class Enemy extends Character {
 
         else if(directionFacing==Direction.DOWN&&getPos_y()>context.currentHeight*2.8/7&&!atEdge[1]) {
             directionFacing = Direction.LEFT;
-            setPos_x(getPos_x()-20);
+            setPos_x(getPos_x()+100);
             atEdge[1]=true;
         }
-        else if(directionFacing==Direction.LEFT&&getPos_x()<context.currentWidth*1/12.0&&!atEdge[2]){
+        else if(directionFacing==Direction.LEFT&&getPos_x()<context.currentWidth*1/12.0+80&&!atEdge[2]){
             directionFacing = Direction.DOWN;
-            setPos_x(getPos_x()+1);
+            setPos_x(getPos_x()-100);
             atEdge[2]=true;
         }
 
@@ -119,16 +123,30 @@ public class Enemy extends Character {
         }
 
         if(directionFacing==Direction.RIGHT)
+        {
             setPos_x(getPos_x()+20);
+            speedX=20;
+            speedY=0;
+        }
 
-        else if(directionFacing==Direction.LEFT)
-            setPos_x(getPos_x()-20);
+        else if(directionFacing==Direction.LEFT) {
+            setPos_x(getPos_x() - 20);
+            speedX=-20;
+            speedY=0;
+        }
 
-        else if(directionFacing==Direction.DOWN)
-            setPos_y(getPos_y()+20);
+        else if(directionFacing==Direction.DOWN) {
+            setPos_y(getPos_y() + 20);
+            speedX=0;
+            speedY=20;
+        }
 
         else
-            setPos_y(getPos_y()-20);
+        {
+        setPos_y(getPos_y() - 20);
+            speedX=0;
+            speedY=-20;
+        }
 
     }
 

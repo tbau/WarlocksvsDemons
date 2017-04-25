@@ -11,8 +11,49 @@ public class Ally extends Character {
 
     private Weapon weapon;
     private BattleFieldView context;
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public BattleFieldView getContext() {
+        return context;
+    }
+
+    public void setContext(BattleFieldView context) {
+        this.context = context;
+    }
+
+    public AllyAttributes getAa() {
+        return aa;
+    }
+
+    public void setAa(AllyAttributes aa) {
+        this.aa = aa;
+    }
+
+    public int getRecharge() {
+        return recharge;
+    }
+
+    public void setRecharge(int recharge) {
+        this.recharge = recharge;
+    }
+
     private AllyAttributes aa;
 
+    int recharge=0;
+    public Ally(Ally ally,int x,int y){
+        super(x,y,ally.getAppearance());
+        this.weapon=ally.weapon;
+        this.aa = ally.aa;
+        this.context=ally.context;
+
+    }
     public Ally(int pos_x, int pos_y,Bitmap appearance,AllyAttributes aa, Weapon weapon,BattleFieldView context) {
         super(pos_x, pos_y,appearance);
         this.weapon=weapon;
@@ -22,31 +63,23 @@ public class Ally extends Character {
 
     @Override
     public void animate() {
-        int x = getPos_x();
-        int y = getPos_y();
 
-        if(directionFacing==Direction.RIGHT&&getPos_x()>context.currentWidth*8.0/9.3) {
-            directionFacing = Direction.DOWN;
-            setPos_x(getPos_x()-20);
+        if(recharge==0) {
+            for (int i = 0; i < context.enemiesInBattle.size(); i++) {
+                if (Math.sqrt(Math.pow((double) context.enemiesInBattle.get(i).getPos_x() - getPos_x(), 2.0) +
+                        Math.pow((double) context.enemiesInBattle.get(i).getPos_y() - getPos_y(), 2.0)) < weapon.getWeaponRange()) {
+                    if(context.enemiesInBattle.get(i).getPos_y()>getPos_y())
+                        context.projectileList.add(new Projectile(getPos_x(), getPos_y(), context.enemiesInBattle.get(i).speedX,
+                            0, weapon,context.enemiesInBattle.get(i)));
+                    else
+                        context.projectileList.add(new Projectile(getPos_x(), getPos_y(), context.enemiesInBattle.get(i).speedX,
+                            0, weapon,context.enemiesInBattle.get(i)));
+
+                    break;
+                }
+            }
+        recharge=weapon.getRechargeRate();
         }
-
-        else if(directionFacing==Direction.DOWN&&getPos_y()>context.currentHeight*3.0/7) {
-            directionFacing = Direction.LEFT;
-            setPos_x(getPos_x()-20);
-        }
-
-
-        if(directionFacing==Direction.RIGHT)
-            setPos_x(getPos_x()+20);
-
-        else if(directionFacing==Direction.LEFT)
-            setPos_x(getPos_x()-20);
-
-        else if(directionFacing==Direction.DOWN)
-            setPos_y(getPos_y()+20);
-
-        else
-            setPos_y(getPos_y()-20);
-
+        recharge--;
     }
 }
