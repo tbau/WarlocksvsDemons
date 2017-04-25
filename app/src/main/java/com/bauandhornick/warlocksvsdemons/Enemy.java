@@ -2,6 +2,7 @@ package com.bauandhornick.warlocksvsdemons;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 /**
  * Created by Thomas on 4/3/2017.
@@ -16,12 +17,15 @@ public class Enemy extends Character {
     int speedX;
     int speedY;
 
+    int colorFilter;
+
     public Enemy(Enemy enemy){
         super(0, (int) (enemy.getContext().currentHeight*2/13.0),enemy.getAppearance());
         this.ea = enemy.getEa();
         this.context = enemy.getContext();
         atEdge = new boolean[13];
         this.health = ea.getHealth();
+        this.colorFilter= Color.WHITE;
     }
 
     public Enemy(int pos_x, int pos_y, Bitmap appearance, EnemyAttributes ea, BattleFieldView context) {

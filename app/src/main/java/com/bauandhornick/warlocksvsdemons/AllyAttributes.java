@@ -2,11 +2,13 @@ package com.bauandhornick.warlocksvsdemons;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Thomas on 4/11/2017.
  */
 
-public class AllyAttributes {
+public class AllyAttributes implements Serializable {
 
     private String name;
     private int requireFlip;

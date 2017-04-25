@@ -2,11 +2,13 @@ package com.bauandhornick.warlocksvsdemons;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Thomas on 4/3/2017.
  */
 
-public abstract class Character {
+public abstract class Character implements Serializable{
     private int pos_x;
     private int pos_y;
 

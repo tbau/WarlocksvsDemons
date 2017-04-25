@@ -3,11 +3,13 @@ package com.bauandhornick.warlocksvsdemons;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Thomas on 4/3/2017.
  */
 
-public class Ally extends Character {
+public class Ally extends Character implements Serializable {
 
     private Weapon weapon;
     private BattleFieldView context;

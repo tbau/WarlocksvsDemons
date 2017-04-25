@@ -2,12 +2,13 @@ package com.bauandhornick.warlocksvsdemons;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Alex Hornick on 4/6/2017.
  */
 
-public class Weapon implements Cloneable{
-
+public class Weapon implements Serializable{
 
 
     private Bitmap weaponAppearance;

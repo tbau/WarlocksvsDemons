@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -12,7 +15,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +27,7 @@ import java.util.Random;
  * Created by Thomas on 3/24/2017.
  */
 
-public class BattleFieldView extends View implements View.OnTouchListener {
+public class BattleFieldView extends View implements View.OnTouchListener, Serializable {
 
     Object lock;
 
@@ -33,6 +38,9 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
     int currentWidth;    //Width of View
     int currentHeight;   //Height of View
+
+    int colorFilter[];
+    ColorFilter filter;
 
     Paint paint;         //Used to draw on Canvas
 
@@ -105,6 +113,11 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         currentWidth=dm.widthPixels;
         currentHeight= dm.heightPixels;
+
+        colorFilter = new int [3];
+        colorFilter[0] = Color.RED;
+        colorFilter[1]=Color.CYAN;
+        colorFilter[2]=Color.YELLOW;
 
         bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
 
@@ -240,16 +253,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
             }
 
         }
-/*
-        Ally ally= new Ally(availableAllyList.get(3),500,500);
-        alliesInBattle.add(ally);
-        ally= new Ally(availableAllyList.get(4),700,500);
-        alliesInBattle.add(ally);
-        ally= new Ally(availableAllyList.get(5),900,500);
-        alliesInBattle.add(ally);
- */       //projectileList.add(new Projectile(100,200,1,1,weaponList.get(0)));
-        //enemyThread = new animateEnemies(this);
-        //enemyThread.execute();
+        ColorFilter filter = new LightingColorFilter(Color.RED, 0);
 
         this.setOnTouchListener(this);
     }
@@ -406,6 +410,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         }
 
         for(Enemy enemy: enemiesInBattle){
+            filter = new LightingColorFilter(enemy.colorFilter,0);
+            paint.setColorFilter(filter);
             if(enemy.directionFacing!= Character.Direction.LEFT)
                 canvas.drawBitmap(enemy.getAppearance(),enemy.getPos_x(),enemy.getPos_y(),paint);
             else{
@@ -415,6 +421,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                 canvas.drawBitmap(enemy.getAppearance(),flipMatrix,paint);
         }
         }
+        paint.setColorFilter(null);
 
         synchronized (lock) {
             for (int i=0;i< projectileList.size();i++) {
@@ -478,13 +485,16 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
             generateRound();
 
+
+
             while(true){
 
             synchronized (lock){
             for(int j=0; j<enemiesInBattle.size();j++){
 
              enemiesInBattle.get(j).animate();
-                //if(enemiesInBattle.get(i).getPos_x()>context.currentWidth||enemiesInBattle.get(i).getPos_x()<0)
+                enemiesInBattle.get(j).colorFilter=Color.WHITE;
+               //if(enemiesInBattle.get(i).getPos_x()>context.currentWidth||enemiesInBattle.get(i).getPos_x()<0)
             // postInvalidate();
                 for(int m=0;m<projectileList.size();m++){
                     int x=projectileList.get(m).getX();
@@ -498,6 +508,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                             y>enemiesInBattle.get(j).getPos_y()-20&&y<enemiesInBattle.get(j).getPos_y()+120){
                         enemiesInBattle.get(j).health-=projectileList.get(m).getWeapon().getDamage();
 
+                        enemiesInBattle.get(j).colorFilter=colorFilter[projectileList.get(m).getWeapon().getWeaponAffinity().ordinal()];
                         projectileList.remove(m);
 
                         if(enemiesInBattle.get(j).health<=0){
@@ -539,6 +550,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
                 }
             }
+
+                publishProgress(i);
 
                 if(i>3) {
                 if(enemiesInBattle.size()>0)
@@ -638,8 +651,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         protected void onProgressUpdate(Object... values) {
             super.onProgressUpdate(values);
             //if(values[0]%5000==0)
-             //   Toast.makeText(context.getContext().getApplicationContext(),alliesAndEnemies.size()+"",Toast.LENGTH_SHORT).show();
-            Log.i("enemy: ",values[0]+"");
+              Toast.makeText(context.getContext().getApplicationContext(),context.alliesInBattle.size()+"",Toast.LENGTH_SHORT).show();
+
         }
 
         @Override

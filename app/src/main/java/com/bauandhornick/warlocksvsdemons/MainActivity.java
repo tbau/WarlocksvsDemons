@@ -1,6 +1,7 @@
 package com.bauandhornick.warlocksvsdemons;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +24,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -119,7 +134,14 @@ public class MainActivity extends AppCompatActivity {
                 k++;
             ll.addView(im);
             }
+        readFile();
+        bfv.invalidate();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+   // readFile();
     }
 
     @Override
@@ -141,5 +163,48 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void readFile(){
+        FileInputStream streamIn = null;
+        try {
+            streamIn = openFileInput("gameState.txt");
+            ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
+            //bfv.bm = (BattleManager) objectinputstream.readObject();
+            for(int i=0;i<bfv.alliesInBattle.size();i++){
+                bfv.alliesInBattle.add((Ally)objectinputstream.readObject());
+            }
+
+           // bfv.alliesInBattle = (List<Ally>) objectinputstream.readObject();
+
+            streamIn.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+/*
+        try {
+
+            FileOutputStream fout = openFileOutput("gameState.txt",MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+
+            for(int i=0;i<bfv.alliesInBattle.size();i++){
+                oos.writeObject(bfv.alliesInBattle.get(i));
+            }
+            oos.close();
+            //oos.writeObject(bfv.bm);
+            //oos.writeObject(bfv.alliesInBattle);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 }
