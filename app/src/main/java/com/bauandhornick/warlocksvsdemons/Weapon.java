@@ -15,12 +15,12 @@ public class Weapon implements Cloneable{
     private Character.Element weaponAffinity;
     private int weaponSpeed;
     private int damage;
-    private double rechargeRate;
+    private int rechargeRate;
     private String areaOfEffect;
 
 
     public Weapon(Bitmap weaponAppearance, Character.Element weaponAffinity, int damage,
-                  int weaponRange, double rechargeRate, int weaponSpeed,  String areaOfEffect) {
+                  int weaponRange, int rechargeRate, int weaponSpeed,  String areaOfEffect) {
 
         this.weaponAppearance = weaponAppearance;
         this.weaponRange = weaponRange;
@@ -63,11 +63,11 @@ public class Weapon implements Cloneable{
         this.weaponSpeed = weaponSpeed;
     }
 
-    public double getRechargeRate() {
+    public int getRechargeRate() {
         return rechargeRate;
     }
 
-    public void setRechargeRate(double rechargeRate) { this.rechargeRate = rechargeRate; }
+    public void setRechargeRate(int rechargeRate) { this.rechargeRate = rechargeRate; }
 
     public String getAreaOfEffect() {
         return areaOfEffect;

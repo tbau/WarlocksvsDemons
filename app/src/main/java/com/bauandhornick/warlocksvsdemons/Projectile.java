@@ -10,13 +10,15 @@ public class Projectile {
     private int vel_x;
     private int vel_y;
     private Weapon weapon;
+    Enemy enemy;
 
-    public Projectile(int x, int y, int vel_x, int vel_y, Weapon weapon) {
+    public Projectile(int x, int y, int vel_x, int vel_y, Weapon weapon, Enemy enemy) {
         this.x = x;
         this.y = y;
         this.vel_x = vel_x;
         this.vel_y = vel_y;
         this.weapon=weapon;
+        this.enemy=enemy;
     }
 
     public int getX() {
@@ -54,5 +56,6 @@ public class Projectile {
     public Weapon getWeapon() {return weapon;}
 
     public void setWeapon(Weapon weapon) {this.weapon = weapon;}
+
 
 }
