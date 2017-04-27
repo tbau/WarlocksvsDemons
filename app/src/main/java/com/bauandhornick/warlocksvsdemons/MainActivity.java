@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
         bfv = (BattleFieldView)findViewById(R.id.BattleFieldView);
         HorizontalScrollView hsv = (HorizontalScrollView)findViewById(R.id.scrollview);
         ViewGroup.LayoutParams params = hsv.getLayoutParams();
-// Changes the height and width to the specified *pixels*
+
+        // Changes the height and width to the specified *pixels*
         params.height = (int)(bfv.currentHeight*2/13.0);
         params.width = bfv.currentWidth;
         hsv.setLayoutParams(params);
