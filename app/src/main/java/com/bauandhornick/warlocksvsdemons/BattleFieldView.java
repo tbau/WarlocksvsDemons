@@ -15,6 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.Serializable;
@@ -28,6 +29,8 @@ import java.util.Random;
  */
 
 public class BattleFieldView extends View implements View.OnTouchListener, Serializable {
+
+    MainActivity mainContext;
 
     Object lock;
 
@@ -79,6 +82,9 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
 
     Ally tempAlly;
 
+    public void setMainContext(MainActivity mainContext){
+        this.mainContext = mainContext;
+    }
     public BattleFieldView(Context context) {
         super(context);
         setUp(null);
@@ -119,7 +125,8 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
         colorFilter[1]=Color.CYAN;
         colorFilter[2]=Color.YELLOW;
 
-        bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
+       // bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
+        bm = new BattleManager(10000,10000000,0, BattleManager.Difficulty.NOVICE);
 
         enemyAttributesList = new HashMap<>();
         allyAttributesList = new HashMap<>();
@@ -321,40 +328,40 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
     public void initializeWeapons()
     {
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(0).getCol(),
-                  100*weaponIndexes.get(0).getRow(),100,100), Character.Element.FIRE,50,500,5,10,"no"));
+                  100*weaponIndexes.get(0).getRow(),100,100), Character.Element.FIRE,50,1250,8,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(1).getCol(),
-                100*weaponIndexes.get(1).getRow(),100,100), Character.Element.ICE,50,500,5,10,"no"));
+                100*weaponIndexes.get(1).getRow(),100,100), Character.Element.ICE,50,1250,8,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(2).getCol(),
-                100*weaponIndexes.get(2).getRow(),100,100), Character.Element.LIGHTNING,50,500,5,10,"no"));
+                100*weaponIndexes.get(2).getRow(),100,100), Character.Element.LIGHTNING,50,1250,8,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(3).getCol(),
-                100*weaponIndexes.get(3).getRow(),100,100), Character.Element.FIRE,200,750,8,10,"no"));
+                100*weaponIndexes.get(3).getRow(),100,100), Character.Element.FIRE,200,750,14,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(4).getCol(),
-                100*weaponIndexes.get(4).getRow(),100,100), Character.Element.ICE,200,750,8,10,"no"));
+                100*weaponIndexes.get(4).getRow(),100,100), Character.Element.ICE,200,750,14,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(5).getCol(),
-                100*weaponIndexes.get(5).getRow(),100,100), Character.Element.LIGHTNING,200,750,8,10,"no"));
+                100*weaponIndexes.get(5).getRow(),100,100), Character.Element.LIGHTNING,200,750,14,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(6).getCol(),
-                100*weaponIndexes.get(6).getRow(),100,100), Character.Element.FIRE,2000,1000,12,10,"no"));
+                100*weaponIndexes.get(6).getRow(),100,100), Character.Element.FIRE,2000,1000,20,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(7).getCol(),
-                100*weaponIndexes.get(7).getRow(),100,100), Character.Element.ICE,2000,1000,12,10,"no"));
+                100*weaponIndexes.get(7).getRow(),100,100), Character.Element.ICE,2000,1000,20,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(8).getCol(),
-                100*weaponIndexes.get(8).getRow(),100,100), Character.Element.LIGHTNING,2000,1000,12,10,"no"));
+                100*weaponIndexes.get(8).getRow(),100,100), Character.Element.LIGHTNING,2000,1000,20,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(9).getCol(),
-                100*weaponIndexes.get(9).getRow(),100,100), Character.Element.FIRE,10000,1250,15,10,"no"));
+                100*weaponIndexes.get(9).getRow(),100,100), Character.Element.FIRE,10000,500,25,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(10).getCol(),
-                100*weaponIndexes.get(10).getRow(),100,100), Character.Element.ICE,10000,1250,15,10,"no"));
+                100*weaponIndexes.get(10).getRow(),100,100), Character.Element.ICE,10000,500,25,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(11).getCol(),
-                100*weaponIndexes.get(11).getRow(),100,100), Character.Element.LIGHTNING,10000,1250,15,10,"no"));
+                100*weaponIndexes.get(11).getRow(),100,100), Character.Element.LIGHTNING,10000,500,25,10,"no"));
 
      /* Bitmap weaponAppearance, Character.Element weaponAffinity, int damage, int weaponRange,
      double rechargeRate, int weaponSpeed,  String areaOfEffect)
@@ -470,6 +477,15 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
     }
 
     public class animateEnemies extends AsyncTask<Object, Object, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Button b = (Button) mainContext.findViewById(R.id.start_button);
+                    b.setVisibility(INVISIBLE);
+
+        }
+
         private BattleFieldView context;
 
         public animateEnemies(BattleFieldView context) {
@@ -479,6 +495,7 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
         @Override
         protected Void doInBackground(Object... params) {
             double i=0;
+
             int k=0;
 
             bm.setRound(bm.getRound()+1);
@@ -521,6 +538,7 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
                 }
                 if(enemiesInBattle.size()>0&&j<enemiesInBattle.size() && enemiesInBattle.get(j).getPos_x()>currentWidth){
                     bm.setHealth(bm.getHealth()-enemiesInBattle.get(j).getEa().getDamage());
+
                     enemiesInBattle.remove(j);
                 }
             }}
@@ -531,9 +549,12 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
                 for (int j = 0; j < projectileList.size(); j++) {
                     Projectile temp = projectileList.get(j);
 
-                    if (projectileList.get(j).enemy == null)
-                        projectileList.remove(j);
+                    temp.lifetime--;
 
+                    if (temp.enemy == null||temp.lifetime<=0) {
+                        projectileList.remove(j);
+                        continue;
+                    }
                     if (temp.enemy.getPos_x() > temp.getX())
                         temp.setVel_x(20);
                     else
@@ -551,11 +572,11 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
                 }
             }
 
-                publishProgress(i);
+                //publishProgress(i);
 
-                if(i>3) {
-                if(enemiesInBattle.size()>0)
-                   publishProgress(i);
+                //if(i>3) {
+                //if(enemiesInBattle.size()>0)
+                  // publishProgress(i);
 
                  postInvalidate();
                     if(enemiesInBattle.size()==0&&enemyQueue.size()==0){
@@ -564,7 +585,7 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
                         return null;
                     }
 
-               }
+               //}
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -597,7 +618,7 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
 
             Enemy enemy;
 
-            int i =(bm.getRound()/10)+1;
+            /*int i =(bm.getRound()/10)+1;
 
             if(i>availableEnemyList.size())
                 i=availableEnemyList.size();
@@ -613,39 +634,20 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
                 l = rand.nextInt(alliesInBattle.size()+(i*alliesInBattle.size())/k)+1;
 
             int num = l*i+(rand.nextInt(4)+1)*(rand.nextInt(2)+1);
-
             if(num>10*alliesInBattle.size())
                 num=4*alliesInBattle.size();
 
             for(int count=0;count<num;count++){
                 enemy = new Enemy(availableEnemyList.get(rand.nextInt(i)));
                 enemyQueue.add(enemy);
+            }*/
+
+            for(int j=0;j<10;j++){
+                for(int i=0;i<availableEnemyList.size();i++){
+                 enemy = new Enemy(availableEnemyList.get(i));
+                 enemyQueue.add(enemy);
+                }
             }
-            /*
-            Enemy enemy = new Enemy(availableEnemyList.get(12));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(13));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(14));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(15));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(15));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(16));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(11));
-            enemyQueue.add(enemy);
-
-            enemy = new Enemy(availableEnemyList.get(9));
-            enemyQueue.add(enemy);
-*/
         }
         @Override
         protected void onProgressUpdate(Object... values) {
@@ -658,6 +660,8 @@ public class BattleFieldView extends View implements View.OnTouchListener, Seria
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Button b = (Button) mainContext.findViewById(R.id.start_button);
+            b.setVisibility(VISIBLE);
             enemyThread=null;
         }
     }

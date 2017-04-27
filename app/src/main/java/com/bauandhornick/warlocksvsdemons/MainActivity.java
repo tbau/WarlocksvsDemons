@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             ll.addView(im);
             }
         readFile();
+        bfv.setMainContext(this);
         bfv.invalidate();
     }
 
