@@ -25,7 +25,7 @@ public class Enemy extends Character {
         this.context = enemy.getContext();
         atEdge = new boolean[13];
         this.health = ea.getHealth();
-        this.colorFilter= Color.WHITE;
+        this.colorFilter= 3;
     }
 
     public Enemy(int pos_x, int pos_y, Bitmap appearance, EnemyAttributes ea, BattleFieldView context) {

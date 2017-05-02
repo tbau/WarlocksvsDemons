@@ -1,5 +1,6 @@
 package com.bauandhornick.warlocksvsdemons;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -16,6 +18,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Serializable;
@@ -119,7 +123,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         currentWidth=dm.widthPixels;
         currentHeight= dm.heightPixels;
 
-       // bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
+        // bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
         bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
 
         enemyAttributesList = new HashMap<>();
@@ -165,18 +169,16 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         for(int i=0;i<12;i++) {
 
-            Log.i("hi",i+"");
-
             if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_CLASSM32)){
                 Bitmap temp = Bitmap.createBitmap(dg_classm32Bitmap, 100 * allyIndexes.get(i).getCol(),
                         100 * allyIndexes.get(i).getRow(), 100, 100);
 
                 if(allyAttributesList.get(i).getRequireFlip()==1) {
-                temp = Bitmap.createBitmap(temp, 0,
-                        0,100,100,flipMatrix,false);
+                    temp = Bitmap.createBitmap(temp, 0,
+                            0,100,100,flipMatrix,false);
                 }
 
-            availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),temp,allyAttributesList.get(i),weaponList.get(i),this));
+                availableAllyList.add(new Ally(0, (int) (currentHeight*2/13.0),temp,allyAttributesList.get(i),weaponList.get(i),this));
             }
             else if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_HUMANS32)) {
 
@@ -207,8 +209,6 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
 
         for(int i=0;i<17;i++) {
-
-            Log.i("enemy",i+"");
 
             if(enemyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_UNIQUES32)){
                 Bitmap temp = Bitmap.createBitmap(dg_uniques32Bitmap, 100 * enemyIndexes.get(i).getCol(),
@@ -256,7 +256,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         }
         filter = new ColorFilter[4];
         filter[0] = new LightingColorFilter(Color.RED,0);
-        filter[1] = new LightingColorFilter(Color.BLUE,0);
+        filter[1] = new LightingColorFilter(Color.CYAN,0);
         filter[2] = new LightingColorFilter(Color.YELLOW,0);
         filter[3] = new LightingColorFilter(Color.WHITE,0);
 
@@ -326,7 +326,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
     public void initializeWeapons()
     {
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(0).getCol(),
-                  100*weaponIndexes.get(0).getRow(),100,100), Character.Element.FIRE,50,1250,8,10,"no"));
+                100*weaponIndexes.get(0).getRow(),100,100), Character.Element.FIRE,50,1250,8,10,"no"));
 
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(1).getCol(),
                 100*weaponIndexes.get(1).getRow(),100,100), Character.Element.ICE,50,1250,8,10,"no"));
@@ -364,7 +364,6 @@ public class BattleFieldView extends View implements View.OnTouchListener {
      /* Bitmap weaponAppearance, Character.Element weaponAffinity, int damage, int weaponRange,
      double rechargeRate, int weaponSpeed,  String areaOfEffect)
        */
-
 
     }
 
@@ -424,7 +423,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                 flipMatrix.postTranslate(enemy.getPos_x(),enemy.getPos_y());
 
                 canvas.drawBitmap(enemy.getAppearance(),flipMatrix,paint);
-        }
+            }
         }
         paint.setColorFilter(null);
 
@@ -438,32 +437,89 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         canvas.drawText("Health: "+bm.getHealth(),currentWidth-250,275,paint);
         canvas.drawText("Mana: "+bm.getMana(),currentWidth-250,315,paint);
         if(tempAlly!=null)
-        canvas.drawBitmap(tempAlly.getAppearance(),tempAlly.getPos_x(),tempAlly.getPos_y(),paint);
-     }
+            canvas.drawBitmap(tempAlly.getAppearance(),tempAlly.getPos_x(),tempAlly.getPos_y(),paint);
+    }
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-       // currentWidth = w;
-       // currentHeight = h;
+        // currentWidth = w;
+        // currentHeight = h;
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-       Ally ally;
+        Ally ally;
         switch(event.getAction()){
 
             case MotionEvent.ACTION_DOWN:
-                if(selected!=-1&&bm.getMana()>=(int)availableAllyList.get(selected).getAa().getCostToBuy()*(((bm.getRound()+5)/5.0))){
+                if(selected!=-1&&bm.getMana()>= availableAllyList.get(selected).getAa().getCostToBuy() *(((bm.getRound()+5)/5.0))){
                     tempAlly= new Ally(availableAllyList.get(selected),(int)event.getX()-50,(int)event.getY()-50,selected);
                     invalidate();}
+                else if(selected!=1)
+                {
+                    int x = (int)event.getX();
+                    int y = (int)event.getY();
+                    for(int i=alliesInBattle.size()-1;i>=0;i--){
+                        if(x>alliesInBattle.get(i).getPos_x()&&x<alliesInBattle.get(i).getPos_x()+100&&
+                                y>alliesInBattle.get(i).getPos_y()&&y<alliesInBattle.get(i).getPos_y()+100)
+                        {
+                            final Dialog dialog = new Dialog(mainContext);
+                            dialog.setContentView(R.layout.character_popup);
+
+                            dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
+                            TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
+                            tv.setText(alliesInBattle.get(i).getAa().getName());
+                            ImageView im = (ImageView) dialog.findViewById(R.id.ally_bitmap);
+                            im.setImageDrawable(new BitmapDrawable(getResources(),alliesInBattle.get(i).getAppearance()));
+                            tv = (TextView) dialog.findViewById(R.id.affinity);
+                            tv.setText("AFFINITY: " + alliesInBattle.get(i).getAa().getAffinity());
+                            tv = (TextView) dialog.findViewById(R.id.weakness);
+                            tv.setText("DAMAGE: " + alliesInBattle.get(i).getWeapon().getDamage());
+                            tv = (TextView) dialog.findViewById(R.id.costToBuy);
+                            if(bm.getRound()>1)
+                                tv.setText("SACRIFICE FOR: "+ (int)(0.5*(alliesInBattle.get(i).getAa().getCostToBuy() *((bm.getRound()+5)/5.0))));
+                            else
+                                tv.setText("SACRIFICE FOR: "+(int)(0.5*alliesInBattle.get(i).getAa().getCostToBuy()));
+
+
+                            Button b = (Button) dialog.findViewById(R.id.cancel_button);
+                            b.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            final int id = v.getId();
+                            final int index = i;
+                            b = (Button) dialog.findViewById(R.id.addButton);
+                            b.setText("Sacrifice");
+                            b.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(bm.getRound()>1)
+                                        bm.setMana((int)(0.5*(alliesInBattle.get(index).getAa().getCostToBuy() *((bm.getRound()+5)/5.0))+bm.getMana()));
+                                    else
+                                        bm.setMana((int)(0.5*alliesInBattle.get(index).getAa().getCostToBuy()+bm.getMana()));
+                                    alliesInBattle.remove(index);
+                                    invalidate();
+
+                                    dialog.cancel();
+                                }
+                            });
+                            dialog.show();
+                            break;
+                        }
+                    }
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                if(selected!=-1&&bm.getMana()>=(int)availableAllyList.get(selected).getAa().getCostToBuy()*(((bm.getRound()+5)/5.0))){
+                if(selected!=-1&&bm.getMana()>= availableAllyList.get(selected).getAa().getCostToBuy() *(((bm.getRound()+5)/5.0))){
                     tempAlly= new Ally(availableAllyList.get(selected),(int)event.getX()-50,(int)event.getY()-50,selected);
                     invalidate();}
                 return true;
             case MotionEvent.ACTION_UP:
-                if(selected!=-1&&bm.getMana()>=(int)availableAllyList.get(selected).getAa().getCostToBuy()*(((bm.getRound()+5)/5.0))){
+                if(selected!=-1&&bm.getMana()>= availableAllyList.get(selected).getAa().getCostToBuy() *(((bm.getRound()+5)/5.0))){
                     alliesInBattle.add(tempAlly);
                     bm.setMana(bm.getMana()-(int)(availableAllyList.get(selected).getAa().getCostToBuy()*(((bm.getRound()+5)/5.0))));
                     selected=-1;
@@ -476,11 +532,14 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
     public class animateEnemies extends AsyncTask<Object, Object, Void> {
 
+        public boolean paused= false;
+        public boolean done = false;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             Button b = (Button) mainContext.findViewById(R.id.start_button);
-                    b.setVisibility(INVISIBLE);
+            b.setVisibility(INVISIBLE);
 
         }
 
@@ -494,83 +553,84 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         protected Void doInBackground(Object... params) {
             double i=0;
 
-            int k=0;
-
             bm.setRound(bm.getRound()+1);
 
             generateRound();
 
+            while(!done){
 
+                Log.i("Done-----","Inside Done");
+            while(!paused){
+                Log.i("Done-----","Inside Paused");
 
-            while(true){
+                    synchronized (lock){
+                        for(int j=0; j<enemiesInBattle.size();j++){
 
-            synchronized (lock){
-            for(int j=0; j<enemiesInBattle.size();j++){
+                            enemiesInBattle.get(j).animate();
+                            enemiesInBattle.get(j).colorFilter=3;
 
-             enemiesInBattle.get(j).animate();
-                enemiesInBattle.get(j).colorFilter=3;
-               //if(enemiesInBattle.get(i).getPos_x()>context.currentWidth||enemiesInBattle.get(i).getPos_x()<0)
-            // postInvalidate();
-                for(int m=0;m<projectileList.size();m++){
-                    int x=projectileList.get(m).getX();
-                    int y=projectileList.get(m).getY();
+                            for(int m=0;m<projectileList.size();m++){
+                                int x=projectileList.get(m).getX();
+                                int y=projectileList.get(m).getY();
 
-                    if(projectileList.get(m).enemy==null) {
-                        projectileList.remove(m);
+                                if(projectileList.get(m).enemy==null) {
+                                    projectileList.remove(m);
 
+                                }
+                                if(x>enemiesInBattle.get(j).getPos_x()-20&&x<enemiesInBattle.get(j).getPos_x()+120&&
+                                        y>enemiesInBattle.get(j).getPos_y()-20&&y<enemiesInBattle.get(j).getPos_y()+120){
+                                    enemiesInBattle.get(j).health-=projectileList.get(m).getWeapon().getDamage();
+
+                                    enemiesInBattle.get(j).colorFilter=projectileList.get(m).getWeapon().getWeaponAffinity().ordinal();
+                                    projectileList.remove(m);
+
+                                    if(enemiesInBattle.get(j).health<=0){
+                                        bm.setMana(bm.getMana()+enemiesInBattle.get(j).getEa().getManaGain());
+                                        enemiesInBattle.remove(j);
+                                    }
+                                    break;
+                                }
+
+                            }
+                            if(enemiesInBattle.size()>0&&j<enemiesInBattle.size() && enemiesInBattle.get(j).getPos_x()>currentWidth){
+                                bm.setHealth(bm.getHealth()-enemiesInBattle.get(j).getEa().getDamage());
+
+                                enemiesInBattle.remove(j);
+                            }
+                        }}
+                    for(int j=0;j<alliesInBattle.size();j++){
+                        alliesInBattle.get(j).animate();
                     }
-                    if(x>enemiesInBattle.get(j).getPos_x()-20&&x<enemiesInBattle.get(j).getPos_x()+120&&
-                            y>enemiesInBattle.get(j).getPos_y()-20&&y<enemiesInBattle.get(j).getPos_y()+120){
-                        enemiesInBattle.get(j).health-=projectileList.get(m).getWeapon().getDamage();
+                    synchronized (lock) {
+                        for (int j = 0; j < projectileList.size(); j++) {
+                            Projectile temp = projectileList.get(j);
 
-                        enemiesInBattle.get(j).colorFilter=projectileList.get(m).getWeapon().getWeaponAffinity().ordinal();
-                        projectileList.remove(m);
+                            temp.lifetime--;
 
-                        if(enemiesInBattle.get(j).health<=0){
-                            bm.setMana(bm.getMana()+enemiesInBattle.get(j).getEa().getManaGain());
-                            enemiesInBattle.remove(j);
+                            if (temp.enemy == null||temp.lifetime<=0) {
+                                projectileList.remove(j);
+                                continue;
+                            }
+
+                            if (temp.enemy.getPos_x() > temp.getX())
+                                temp.setVel_x(20);
+                            else
+                                temp.setVel_x(-20);
+
+
+
+                            if (temp.enemy.getPos_y() > temp.getY())
+                                temp.setVel_y(Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
+                            else
+                                temp.setVel_y(-Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
+
+                            temp.setX(temp.getX() + temp.getVel_x());
+                            temp.setY(temp.getY() + temp.getVel_y());
+
                         }
-                        break;
                     }
 
-                }
-                if(enemiesInBattle.size()>0&&j<enemiesInBattle.size() && enemiesInBattle.get(j).getPos_x()>currentWidth){
-                    bm.setHealth(bm.getHealth()-enemiesInBattle.get(j).getEa().getDamage());
-
-                    enemiesInBattle.remove(j);
-                }
-            }}
-            for(int j=0;j<alliesInBattle.size();j++){
-                alliesInBattle.get(j).animate();
-            }
-            synchronized (lock) {
-                for (int j = 0; j < projectileList.size(); j++) {
-                    Projectile temp = projectileList.get(j);
-
-                    temp.lifetime--;
-
-                    if (temp.enemy == null||temp.lifetime<=0) {
-                        projectileList.remove(j);
-                        continue;
-                    }
-                    if (temp.enemy.getPos_x() > temp.getX())
-                        temp.setVel_x(20);
-                    else
-                        temp.setVel_x(-20);
-
-
-                    if (temp.enemy.getPos_y() > temp.getY())
-                        temp.setVel_y(Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
-                    else
-                        temp.setVel_y(-Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
-
-                    temp.setX(temp.getX() + temp.getVel_x());
-                    temp.setY(temp.getY() + temp.getVel_y());
-
-                }
-            }
-
-                 postInvalidate();
+                    postInvalidate();
                     if(enemiesInBattle.size()==0&&enemyQueue.size()==0){
                         projectileList.clear();
                         postInvalidate();
@@ -578,35 +638,36 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     }
 
 
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-
-                    bm.setRound(bm.getRound()-1);
-
-                    enemyThread=null;
-                    return null;
-
-                }
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
 
 
-                if(false)
-                  break;
-                i+=0.2;
-              if(i>=1&&enemyQueue.size()>0) {
+                    }
+
+                    i+=0.2;
+                    if(i>=1&&enemyQueue.size()>0) {
 
 
-                      Enemy enemy = new Enemy(enemyQueue.get(enemyQueue.size()-1));
+                        Enemy enemy = new Enemy(enemyQueue.get(enemyQueue.size()-1));
 
-                      enemiesInBattle.add(enemy);
+                        enemiesInBattle.add(enemy);
 
                         enemyQueue.remove(enemyQueue.size()-1);
 
-                 i=0;
+                        i=0;
 
-              }
-                postInvalidate();
+                    }
+                    postInvalidate();
+                }
             }
+            if(enemiesInBattle.size()>0){
+                enemiesInBattle.clear();
+
+            }
+            if(enemyQueue.size()>0)
+                enemyQueue.clear();
+
             return null;
         }
 

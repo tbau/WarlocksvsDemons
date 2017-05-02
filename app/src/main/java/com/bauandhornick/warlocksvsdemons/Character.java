@@ -12,7 +12,7 @@ public abstract class Character implements Serializable{
     private int pos_x;
     private int pos_y;
 
-    enum Element{FIRE,ICE,LIGHTNING};
+    enum Element{FIRE,ICE,LIGHTNING}
 
     public Bitmap getAppearance() {
         return appearance;
@@ -26,7 +26,7 @@ public abstract class Character implements Serializable{
 
     Direction directionFacing=Direction.RIGHT;
 
-    enum Direction{RIGHT,LEFT,UP,DOWN};
+    enum Direction{RIGHT,LEFT,UP,DOWN}
 
 
     public Character(int pos_x, int pos_y,Bitmap appearance) {
