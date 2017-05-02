@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Warlocks vs Demons</string>
-    <string name="about_text">Warlocks vs. Demons is a classic Tower Defense Game. You can select warlocks of increasing strength from the scrollbar at the time and add them to the Battle Field! As the stronger the warlock gets, the more expensive it is to purchase with your mana. Once you have placed your allies on the battlefield, you can start the round and the demons will start following the path! Your placed warlocks will shoot spells at the demons, and once they perish you will gain mana to buy more Warlocks. If a demon happens to make it to the end of the path, you will lose health. As you add more warlocks, more demons will appear for you to take down!</string>
+    <string name="about_text">Warlocks vs. Demons is a classic Tower Defense Game. You can select warlocks of various levels from the scrollbar and add them to the Battle Field! As the stronger the warlock gets, the more expensive it is to purchase with your mana. Once you have placed your allies on the battlefield, you can start the round and the demons will start following the path! Your placed warlocks will shoot projectile spells at the demons, and once they perish you will gain mana to buy more Warlocks. If a demon happens to make it to the end of the path, you will lose health. As you add more warlocks, more demons will appear for you to take down!</string>
+    <string name="credit_text">
+    * The level background is licensed under Creative Commons 1.0. Image was created by Author Hassekf: https://opengameart.org/users/hassekf on OpenGameArt.org: https://opengameart.org\n
+    \n* The fire background on the Title screen is a wallpaper developed by Dang Minh as part of the Fire Background Video Wallpaper app.\n
+    </string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

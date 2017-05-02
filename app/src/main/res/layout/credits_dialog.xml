@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    android:id="@+id/root"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/credit_text"
+        android:textColor="@android:color/background_light"
+        android:text="@string/credit_text"
+        android:fontFamily="casual"
+        android:textSize="12sp" />
+
+    <Button
+        android:text="OK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cancel_button"
+        android:fontFamily="casual"
+        android:background="@android:color/holo_green_light"
+        android:textStyle="normal|bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="230dp" />
+
+</RelativeLayout>
