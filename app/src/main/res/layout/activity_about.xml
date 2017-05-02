@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="36sp"
+        android:textColor="@android:color/background_light"
+        android:textSize="34sp"
         android:fontFamily="casual"
         android:gravity="center_horizontal"
         android:layout_alignParentTop="true"
@@ -20,15 +20,28 @@
         android:textStyle="normal|bold" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:id="@+id/about_text"
         android:text="@string/about_text"
         android:textColor="@android:color/background_light"
         android:fontFamily="casual"
         android:textSize="16sp"
+        android:textAlignment="center"
         android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
-        android:textAlignment="center" />
+        android:layout_centerHorizontal="true"
+        android:textStyle="normal|bold" />
+
+    <Button
+        android:text="Credits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/credits"
+        android:background="@android:color/holo_red_light"
+        android:fontFamily="casual"
+        android:textStyle="normal|bold"
+        android:layout_below="@+id/about_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp" />
 
 </RelativeLayout>
