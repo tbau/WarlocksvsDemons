@@ -28,6 +28,7 @@ public class TitleActivity extends Activity implements View.OnClickListener {
 
         if(v.getId() == R.id.start) {
             Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("load",0);
             startActivity(intent);
         }
         else if(v.getId() == R.id.about)
@@ -38,6 +39,9 @@ public class TitleActivity extends Activity implements View.OnClickListener {
 
         else if(v.getId() == R.id.continueButton)
         {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("load",1);
+            startActivity(intent);
 
         }
     }
