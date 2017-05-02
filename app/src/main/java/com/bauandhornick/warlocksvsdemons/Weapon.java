@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Alex Hornick on 4/6/2017.
  */
 
-public class Weapon implements Serializable{
+public class Weapon{
 
 
     private Bitmap weaponAppearance;

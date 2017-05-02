@@ -3,6 +3,7 @@ package com.bauandhornick.warlocksvsdemons;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
@@ -38,6 +40,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Scanner;
+
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -135,9 +140,15 @@ public class MainActivity extends AppCompatActivity {
                 k++;
             ll.addView(im);
             }
-        readFile();
         bfv.setMainContext(this);
+        Intent intent = getIntent();
+        if(intent.hasExtra("load")){
+            int load = intent.getIntExtra("load",0);
+            if(load==1)
+                readFile();
+        }
         bfv.invalidate();
+
     }
 
     @Override
@@ -168,45 +179,89 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void readFile(){
-        FileInputStream streamIn = null;
+
         try {
-            streamIn = openFileInput("gameState.txt");
-            ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
-            //bfv.bm = (BattleManager) objectinputstream.readObject();
-            for(int i=0;i<bfv.alliesInBattle.size();i++){
-                bfv.alliesInBattle.add((Ally)objectinputstream.readObject());
+            FileInputStream fis= openFileInput("gameState.txt");
+            Scanner s = new Scanner(fis);
+            if(s.hasNext())
+                bfv.bm.setRound(s.nextInt());
+            if(s.hasNext())
+                bfv.bm.setHealth(s.nextInt());
+            if(s.hasNext())
+                bfv.bm.setMana(s.nextInt());
+
+            int diff=0;
+            if(s.hasNext())
+                diff = s.nextInt();
+
+            BattleManager.Difficulty diff2[] = BattleManager.Difficulty.values();
+            bfv.bm.setDifficulty(diff2[diff]);
+
+            while(s.hasNext()){
+                int index= s.nextInt();
+                int x = s.nextInt();
+                int y = s.nextInt();
+
+
+                bfv.alliesInBattle.add(new Ally(bfv.availableAllyList.get(index),x,y,index));
             }
 
+            Log.i("ji",""+bfv.alliesInBattle.size());
            // bfv.alliesInBattle = (List<Ally>) objectinputstream.readObject();
 
-            streamIn.close();
+
+            s.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
-    @Override
-    protected void onPause() {
-        super.onPause();
-/*
+    public void saveFile(){
         try {
 
-            FileOutputStream fout = openFileOutput("gameState.txt",MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            FileOutputStream fos = openFileOutput("gameState.txt", Context.MODE_PRIVATE);
+            OutputStreamWriter osw = new OutputStreamWriter(fos);
+            BufferedWriter bw = new BufferedWriter(osw);
+            PrintWriter pw = new PrintWriter(bw);
+
+            pw.println(bfv.bm.getRound());
+            pw.println(bfv.bm.getHealth());
+            pw.println(bfv.bm.getMana());
+            pw.println(bfv.bm.getDifficulty().ordinal());
 
             for(int i=0;i<bfv.alliesInBattle.size();i++){
-                oos.writeObject(bfv.alliesInBattle.get(i));
+                pw.println(bfv.alliesInBattle.get(i).index);
+                pw.println(bfv.alliesInBattle.get(i).getPos_x());
+                pw.println(bfv.alliesInBattle.get(i).getPos_y());
             }
-            oos.close();
-            //oos.writeObject(bfv.bm);
-            //oos.writeObject(bfv.alliesInBattle);
+
+            pw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        saveFile();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bfv.enemyThread != null) {
+            bfv.enemyThread.cancel(true);
+
+        }
+
+        Button b = (Button)findViewById(R.id.start_button);
+        b.setVisibility(VISIBLE);
+
+        saveFile();
     }
 }
