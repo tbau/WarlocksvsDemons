@@ -154,7 +154,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-   // readFile();
+        if (bfv.enemyThread != null) {
+            bfv.enemyThread.paused=false;
+
+        }
+Log.i("Resume--","OnResume");
     }
 
     @Override
@@ -252,15 +256,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (bfv.enemyThread != null) {
+            bfv.enemyThread.paused = true;
+        }Log.i("Stop--","OnStop");
+
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (bfv.enemyThread != null) {
-            bfv.enemyThread.cancel(true);
+            bfv.enemyThread.paused=true;
+            bfv.enemyThread.done=true;
+            bfv.enemyThread=null;
+
+            bfv.bm.setRound(bfv.bm.getRound()-1);
 
         }
-
         Button b = (Button)findViewById(R.id.start_button);
         b.setVisibility(VISIBLE);
+
+        Log.i("Destroy--","OnDestroy");
 
         saveFile();
     }

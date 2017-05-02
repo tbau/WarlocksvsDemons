@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class BattleManager implements Serializable {
 
-    enum Difficulty{NOVICE, APPRENTICE, ADVENT, EXPERT };
+    enum Difficulty{NOVICE, APPRENTICE, ADVENT, EXPERT }
 
     private int health;
     private int mana;
