@@ -1,6 +1,7 @@
 package com.bauandhornick.warlocksvsdemons;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -434,9 +437,13 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                         projectileList.get(i).getY(), paint);
             }
         }
-        canvas.drawText("Level: "+bm.getRound(),currentWidth-250,225,paint);
-        canvas.drawText("Health: "+bm.getHealth(),currentWidth-250,275,paint);
-        canvas.drawText("Mana: "+bm.getMana(),currentWidth-250,315,paint);
+
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "ComingSoon.ttf");
+        Typeface bold = Typeface.create(tf, Typeface.BOLD);
+        paint.setTypeface(bold);
+        canvas.drawText("Level: "+bm.getRound(),currentWidth-320,225,paint);
+        canvas.drawText("Health: "+bm.getHealth(),currentWidth-320,275,paint);
+        canvas.drawText("Mana: "+bm.getMana(),currentWidth-320,315,paint);
         if(tempAlly!=null)
         canvas.drawBitmap(tempAlly.getAppearance(),tempAlly.getPos_x(),tempAlly.getPos_y(),paint);
      }
