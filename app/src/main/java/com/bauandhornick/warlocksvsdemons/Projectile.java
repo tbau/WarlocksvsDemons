@@ -9,6 +9,7 @@ public class Projectile {
     private int y;
     private int vel_x;
     private int vel_y;
+    int lifetime = 50;
     private Weapon weapon;
     Enemy enemy;
 

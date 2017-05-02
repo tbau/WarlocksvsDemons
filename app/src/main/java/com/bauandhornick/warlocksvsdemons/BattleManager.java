@@ -1,10 +1,12 @@
 package com.bauandhornick.warlocksvsdemons;
 
+import java.io.Serializable;
+
 /**
  * Created by Thomas on 4/18/2017.
  */
 
-public class BattleManager {
+public class BattleManager implements Serializable {
 
     enum Difficulty{NOVICE, APPRENTICE, ADVENT, EXPERT };
 
