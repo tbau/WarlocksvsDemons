@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout ll = (LinearLayout)findViewById(R.id.scroll);
         ImageView im = new ImageView(getApplicationContext());
 
-
+        //Get the custom BattleField View into bfv
         bfv = (BattleFieldView)findViewById(R.id.BattleFieldView);
         HorizontalScrollView hsv = (HorizontalScrollView)findViewById(R.id.scrollview);
         ViewGroup.LayoutParams params = hsv.getLayoutParams();
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         params.width = bfv.currentWidth;
         hsv.setLayoutParams(params);
 
-
+        //On Title Menu, when Start is selected, start thread for enemies.
         final Button b = (Button) findViewById(R.id.start_button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,30 +77,48 @@ public class MainActivity extends AppCompatActivity {
                 }}
         });
         int k=0;
+
+        //For all 12 allies, get their bitmaps and place them in the HorizontalScrollView
         for(int i = 0;i<12;i++){
 
             im = new ImageView(getApplicationContext());
+
+            //Get bitmap of ally from the Available Ally list, which stores all 12.
             bitmap = bfv.availableAllyList.get(i).getAppearance();
-                bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
+                bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false); //Scale the bitmap to 200 x 200
             im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
-            im.setBackgroundColor(0xFF222222);
+            im.setBackgroundColor(0xFF222222); //Set background color of ScrollView to black
             im.setId(k);
+
+                //SetOnClickListener for each Ally image. When clicked, a dialog will pop up with the Ally's name, Affinity, Damage, and Cost.
                 im.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Toast.makeText(getApplicationContext(),v.getId()+" ",Toast.LENGTH_LONG).show();
+                        //v.getId() will correspond to an index in AllyAttributeList and AvailableAllyList
+
                         final Dialog dialog = new Dialog(MainActivity.this);
                         dialog.setContentView(R.layout.character_popup);
 
-                        dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
+
+                        dialog.findViewById(R.id.root).setBackgroundColor(0xff000000); //set background of dialog to black
+
+                        //Set the Ally name text using allyAttributesList.
                         TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
                         tv.setText(bfv.allyAttributesList.get(v.getId()).getName());
+
+                        //Display appearance of Ally.
                         ImageView im = (ImageView) dialog.findViewById(R.id.ally_bitmap);
                         im.setImageDrawable(new BitmapDrawable(getResources(),bfv.availableAllyList.get(v.getId()).getAppearance()));
+
+                        //Display Affinity of Ally
                         tv = (TextView) dialog.findViewById(R.id.affinity);
                         tv.setText("AFFINITY: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
+
+                        //Display Damage of Ally.
                         tv = (TextView) dialog.findViewById(R.id.weakness);
                         tv.setText("DAMAGE: " + bfv.weaponList.get(v.getId()).getDamage());
+
+                        //Display Cost of Ally. Cost will change depending on Round, it gradually increases.
                         tv = (TextView) dialog.findViewById(R.id.costToBuy);
                         if(bfv.bm.getRound()>1)
                             tv.setText("COST: " + (int)(bfv.allyAttributesList.get(v.getId()).getCostToBuy()*(((bfv.bm.getRound()+5)/5.0))));
@@ -108,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                           tv.setText("COST: " + bfv.allyAttributesList.get(v.getId()).getCostToBuy());
 
 
-
+                        //Set Cancel button (player does not buy ally)
                         Button b = (Button) dialog.findViewById(R.id.cancel_button);
                         //b.setWidth((int)(dialog.getWindow().getDecorView().getWidth()/2.0));
                         b.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                         final int id = v.getId();
+
+                        //Add button means the user has bought the ally. They can now place and drag ally on the BattleFieldView.
                         b = (Button) dialog.findViewById(R.id.addButton);
                         //b.setWidth((int)(dialog.getWindow().getDecorView().getWidth()/2.0));
                         b.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
             ll.addView(im);
             }
         bfv.setMainContext(this);
+
+        //Load file information if user is loading the last game.
         Intent intent = getIntent();
         if(intent.hasExtra("load")){
             int load = intent.getIntExtra("load",0);
@@ -182,6 +204,9 @@ Log.i("Resume--","OnResume");
         return super.onOptionsItemSelected(item);
     }
 
+    /* This function reads from a file in case the user wants to load the previous game.
+        It'll set info for the BattleManger, which manages the game info.
+     */
     public void readFile(){
 
         try {

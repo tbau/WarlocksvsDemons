@@ -123,34 +123,39 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
+        //Get current width and height of screen
         currentWidth=dm.widthPixels;
         currentHeight= dm.heightPixels;
 
+
         // bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
+
+        //Battle Manager initializes and manages the player's health, mana, round, and difficulty level.
         bm = new BattleManager(10000,3000,0, BattleManager.Difficulty.NOVICE);
 
         enemyAttributesList = new HashMap<>();
         allyAttributesList = new HashMap<>();
         weaponIndexes = new HashMap<>();
 
+        //initialize the Enemy and Ally attributes
         initializeEnemyAttributes();
         initializeAllyAttributes();
 
+        //Initialize the file/sprite sheet information for enemies, allies, and weapons.
         enemyIndexes = new HashMap<>();
         allyIndexes = new HashMap<>();
         weaponIndexes=new HashMap<>();
-
         initializeEnemyIndexes();
         initializeAllyIndexes();
 
-        availableEnemyList = new ArrayList<>();
-        availableAllyList = new ArrayList<>();
-        weaponList = new ArrayList<>();
-        projectileList = new ArrayList<>();
+        availableEnemyList = new ArrayList<>(); //A list of all available enemies
+        availableAllyList = new ArrayList<>(); // A list of all available allies
+        weaponList = new ArrayList<>(); //A list of weapons
+        projectileList = new ArrayList<>(); //A list of projectiles
 
         enemyQueue = new ArrayList<>();
-        enemiesInBattle = new ArrayList<>();
-        alliesInBattle = new ArrayList<>();
+        enemiesInBattle = new ArrayList<>(); //Stores all enemies currently in battle.
+        alliesInBattle = new ArrayList<>(); //Stores all allies currently in battle.
 
         //float widthPixel= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,currentWidth,dm);
         //float heightPixel= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,currentHeight,dm);
@@ -164,12 +169,15 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         dg_effects32Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_effects32); // Load bitmap for some allies
         dg_effects32Bitmap = Bitmap.createScaledBitmap(dg_effects32Bitmap,1200,1100,false);
 
+        //Initialize weapon file information and attributes
         initializeWeaponIndexes();
         initializeWeapons();
 
+        //flipMatrix is used to flip Enemies horizontally
         flipMatrix = new Matrix();
         flipMatrix.setScale(-1,1);
 
+        //This loop loads all of the Allies into memory using allyIndexes and Attributes, and stores it in availableAllyList.
         for(int i=0;i<12;i++) {
 
             if(allyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_CLASSM32)){
@@ -205,12 +213,13 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         dg_monster632Bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.dg_monster632); // Load bitmap for some allies
         dg_monster632Bitmap = Bitmap.createScaledBitmap(dg_monster632Bitmap,600,1300,false);
 
-        backgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.path2);
+        backgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.path2); //Load bitmap for the Grass Path background
         backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap,currentWidth,currentHeight,false);
 
         rand = new Random();
 
 
+        //This loops loads all enemies into memory, using enemeyIndex and enemyAttributesList, and stores it in availableEnemyList.
         for(int i=0;i<17;i++) {
 
             if(enemyIndexes.get(i).getFileNames().equals(FilePosition.FileNames.DG_UNIQUES32)){
@@ -266,34 +275,35 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         this.setOnTouchListener(this);
     }
 
+    /* Initialize all Enemy Attributes to show affinity,
+    weakness, and health, mana, damage requireFlip info in a HashMap */
     public void initializeEnemyAttributes(){
         enemyAttributesList = new HashMap<>();
 
+        //id, requireFlip, weakness, affinity, health, manaGain, damage;
         enemyAttributesList.put(0,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.ICE,100,500,100)); //Skeleton with long sword
         enemyAttributesList.put(1,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.ICE,500,1000,300)); //Skeleton with shield/sword
         enemyAttributesList.put(2,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.ICE,1000,2000,500)); //Skelton with double swords;
-
         enemyAttributesList.put(3,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,2000,3000,800)); //Green orc with sheild and axe
         enemyAttributesList.put(4,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,4000,5000,1000)); //Green orc yellow helmet and sword
         enemyAttributesList.put(5,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,8000,7000,1200)); //Green orc with brown coat and sword
-
         enemyAttributesList.put(6,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,12000,10000,1200)); //Troll with Shield & Battle Axe
         enemyAttributesList.put(7,new EnemyAttributes(0,Character.Element.ICE, Character.Element.FIRE,15000,15000,1200)); //Troll with cross shield and sword
         enemyAttributesList.put(8,new EnemyAttributes(1,Character.Element.ICE, Character.Element.FIRE,20000,20000,1200)); //Troll with cross shield & mace
-
-
         enemyAttributesList.put(9,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.FIRE,25000,30000,1500)); //Red troll golden shield and sword
         enemyAttributesList.put(10,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.FIRE,25000,45000,1500)); //Red troll with sword
-
         enemyAttributesList.put(11,new EnemyAttributes(0, Character.Element.FIRE, Character.Element.LIGHTNING,30000,60000,1600)); //Red floating skeleton
         enemyAttributesList.put(12,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,30000,70000,1600)); //Purple floating skeleton
         enemyAttributesList.put(13,new EnemyAttributes(0, Character.Element.ICE, Character.Element.FIRE,45000,80000,1600)); //Black floating skeleton
-
         enemyAttributesList.put(14,new EnemyAttributes(0, Character.Element.ICE, Character.Element.FIRE,45000,100000,1800)); //Fire fairy
         enemyAttributesList.put(15,new EnemyAttributes(1, Character.Element.FIRE, Character.Element.LIGHTNING,50000,100000,1800)); //Lightning fairy
         enemyAttributesList.put(16,new EnemyAttributes(0, Character.Element.LIGHTNING, Character.Element.ICE,55000,10000,1800)); //Ice fairy
 
     }
+
+    /* Initialize all Ally Attributes, including the Ally name, whether it require a flip,
+        the Ally type weakness, the Ally type affinity, and the cost to buy the ally.
+     */
     private void initializeAllyAttributes() {
         allyAttributesList = new HashMap<>();
 
@@ -311,6 +321,10 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         allyAttributesList.put(10, new AllyAttributes("Expert Ice Mage", 0, Character.Element.FIRE, Character.Element.ICE,192000));
         allyAttributesList.put(11, new AllyAttributes("Expert Lightning Mage", 0, Character.Element.ICE, Character.Element.LIGHTNING,192000));
     }
+
+    /* This function initializes all the weapon indexes, it sends the row and column and file name of the sprite sheet
+    where the projectile is located.
+     */
     public void initializeWeaponIndexes(){
         weaponIndexes.put(0,new FilePosition(4,0, FilePosition.FileNames.DG_EFFECTS32));
         weaponIndexes.put(1,new FilePosition(4,3, FilePosition.FileNames.DG_EFFECTS32));
@@ -326,41 +340,36 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         weaponIndexes.put(11,new FilePosition(5,6, FilePosition.FileNames.DG_EFFECTS32));
     }
 
+    /*
+        This function creates the bitmaps for the projectiles using the Indexes initialized in the function above, and it creates them
+        from the projectile sprite sheets.
+        It sends other weapon info like range, affinity, speed, damage, etc.
+     */
     public void initializeWeapons()
     {
+        //weaponAppearance, weaponRange, weaponAffinity, weaponSpeed, rechargeRate, areaOfEffect, damage
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(0).getCol(),
                 100*weaponIndexes.get(0).getRow(),100,100), Character.Element.FIRE,50,1250,8,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(1).getCol(),
                 100*weaponIndexes.get(1).getRow(),100,100), Character.Element.ICE,50,1250,8,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(2).getCol(),
                 100*weaponIndexes.get(2).getRow(),100,100), Character.Element.LIGHTNING,50,1250,8,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(3).getCol(),
                 100*weaponIndexes.get(3).getRow(),100,100), Character.Element.FIRE,200,750,14,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(4).getCol(),
                 100*weaponIndexes.get(4).getRow(),100,100), Character.Element.ICE,200,750,14,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(5).getCol(),
                 100*weaponIndexes.get(5).getRow(),100,100), Character.Element.LIGHTNING,200,750,14,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(6).getCol(),
                 100*weaponIndexes.get(6).getRow(),100,100), Character.Element.FIRE,2000,1000,20,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(7).getCol(),
                 100*weaponIndexes.get(7).getRow(),100,100), Character.Element.ICE,2000,1000,20,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(8).getCol(),
                 100*weaponIndexes.get(8).getRow(),100,100), Character.Element.LIGHTNING,2000,1000,20,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(9).getCol(),
                 100*weaponIndexes.get(9).getRow(),100,100), Character.Element.FIRE,10000,500,25,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(10).getCol(),
                 100*weaponIndexes.get(10).getRow(),100,100), Character.Element.ICE,10000,500,25,10,"no"));
-
         weaponList.add(new Weapon(Bitmap.createBitmap(dg_effects32Bitmap, 100*weaponIndexes.get(11).getCol(),
                 100*weaponIndexes.get(11).getRow(),100,100), Character.Element.LIGHTNING,10000,500,25,10,"no"));
 
@@ -370,6 +379,9 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
     }
 
+    /*
+    This function initializes the Enemy Indexes with info about row and column in the particular Sprite Sheet file.
+     */
     private void initializeEnemyIndexes() {
         enemyIndexes.put(0, new FilePosition(5, 3, FilePosition.FileNames.DG_UNDEAD32));
         enemyIndexes.put(1, new FilePosition(5, 6, FilePosition.FileNames.DG_UNDEAD32));
@@ -390,7 +402,12 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         enemyIndexes.put(16, new FilePosition(4, 7, FilePosition.FileNames.DG_UNIQUES32));
     }
 
+    /*
+    This function initializes the Ally Indexes with info about row and column in the particular Sprite Sheet file.
+     */
     private void initializeAllyIndexes() {
+
+        //These Ally IDs correspond with the IDs in the AllyAttributes list.
         allyIndexes.put(0, new FilePosition(5, 1, FilePosition.FileNames.DG_CLASSM32));
         allyIndexes.put(1, new FilePosition(0, 2, FilePosition.FileNames.DG_HUMANS32));
         allyIndexes.put(2, new FilePosition(5, 2, FilePosition.FileNames.DG_CLASSM32));
@@ -410,12 +427,14 @@ public class BattleFieldView extends View implements View.OnTouchListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap(backgroundBitmap,0,0,paint);
+        canvas.drawBitmap(backgroundBitmap,0,0,paint); //Draw grass path background
 
+        //Draw all allies in BattleField at their coordinates.
         for (Ally ally : alliesInBattle) {
             canvas.drawBitmap(ally.getAppearance(),ally.getPos_x(),ally.getPos_y(),paint);
         }
 
+        //For each enemy, draw on the canvas. Depending on direction facing, it may need to be flipped using flipMatrix
         for(Enemy enemy: enemiesInBattle){
             if(enemy.colorFilter>=0&&enemy.colorFilter<4)
                 paint.setColorFilter(filter[enemy.colorFilter]);
@@ -470,6 +489,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                         if(x>alliesInBattle.get(i).getPos_x()&&x<alliesInBattle.get(i).getPos_x()+100&&
                                 y>alliesInBattle.get(i).getPos_y()&&y<alliesInBattle.get(i).getPos_y()+100)
                         {
+                            //When an Ally on the BattleField has been touched, make a dialog that displays its info and sacrifice info.
                             final Dialog dialog = new Dialog(mainContext);
                             dialog.setContentView(R.layout.character_popup);
 
@@ -483,12 +503,14 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                             tv = (TextView) dialog.findViewById(R.id.weakness);
                             tv.setText("DAMAGE: " + alliesInBattle.get(i).getWeapon().getDamage());
                             tv = (TextView) dialog.findViewById(R.id.costToBuy);
+
+                            //Sacrifice value will change, but the player will earn mana from sacrificing an Ally.
                             if(bm.getRound()>1)
                                 tv.setText("SACRIFICE FOR: "+ (int)(0.5*(alliesInBattle.get(i).getAa().getCostToBuy() *((bm.getRound()+5)/5.0))));
                             else
                                 tv.setText("SACRIFICE FOR: "+(int)(0.5*alliesInBattle.get(i).getAa().getCostToBuy()));
 
-
+                            //Cancel Button Listener.
                             Button b = (Button) dialog.findViewById(R.id.cancel_button);
                             b.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -501,6 +523,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                             final int index = i;
                             b = (Button) dialog.findViewById(R.id.addButton);
                             b.setText("Sacrifice");
+
+                            //When addButton is selected to Sacrifice an Ally, add the calculated mana back to the user's total mana.
                             b.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -537,6 +561,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         return false;
     }
 
+    /* animateEnemies is a class that extends AsyncTask that manages how the enemies are animated */
     public class animateEnemies extends AsyncTask<Object, Object, Void> {
 
         public boolean paused= false;
@@ -545,6 +570,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            //Hide the START ROUND Button from the BattleFieldView.
             Button b = (Button) mainContext.findViewById(R.id.start_button);
             b.setVisibility(INVISIBLE);
 
@@ -654,16 +681,10 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
                     i+=0.2;
                     if(i>=1&&enemyQueue.size()>0) {
-
-
                         Enemy enemy = new Enemy(enemyQueue.get(enemyQueue.size()-1));
-
                         enemiesInBattle.add(enemy);
-
                         enemyQueue.remove(enemyQueue.size()-1);
-
                         i=0;
-
                     }
                     postInvalidate();
                 }
@@ -678,6 +699,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
             return null;
         }
 
+        /* This function generates the amount of enemies for a new round, which will change as the rounds progress */
         public void generateRound(){
 
             Enemy enemy;
