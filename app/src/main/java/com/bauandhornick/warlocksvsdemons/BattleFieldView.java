@@ -416,18 +416,21 @@ public class BattleFieldView extends View implements View.OnTouchListener {
             canvas.drawBitmap(ally.getAppearance(),ally.getPos_x(),ally.getPos_y(),paint);
         }
 
-        for(Enemy enemy: enemiesInBattle){
-            if(enemy.colorFilter>=0&&enemy.colorFilter<4)
-                paint.setColorFilter(filter[enemy.colorFilter]);
-            if(enemy.directionFacing!= Character.Direction.LEFT)
-                canvas.drawBitmap(enemy.getAppearance(),enemy.getPos_x(),enemy.getPos_y(),paint);
+        synchronized (lock){
+        for(int p= enemiesInBattle.size()-1;p>=0;p--){
+            if(enemiesInBattle.get(p).colorFilter>=0&&enemiesInBattle.get(p).colorFilter<4)
+                paint.setColorFilter(filter[enemiesInBattle.get(p).colorFilter]);
+            if(enemiesInBattle.get(p).directionFacing!= Character.Direction.LEFT)
+                canvas.drawBitmap(enemiesInBattle.get(p).getAppearance(),
+                        enemiesInBattle.get(p).getPos_x(),enemiesInBattle.get(p).getPos_y(),paint);
             else{
                 flipMatrix.setScale(-1,1);
-                flipMatrix.postTranslate(enemy.getPos_x(),enemy.getPos_y());
+                flipMatrix.postTranslate(enemiesInBattle.get(p).getPos_x(),
+                        enemiesInBattle.get(p).getPos_y());
 
-                canvas.drawBitmap(enemy.getAppearance(),flipMatrix,paint);
+                canvas.drawBitmap(enemiesInBattle.get(p).getAppearance(),flipMatrix,paint);
             }
-        }
+        }}
         paint.setColorFilter(null);
 
         synchronized (lock) {
@@ -437,14 +440,27 @@ public class BattleFieldView extends View implements View.OnTouchListener {
             }
         }
 
-        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "ComingSoon.ttf");
-        Typeface bold = Typeface.create(tf, Typeface.BOLD);
-        paint.setTypeface(bold);
+//        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "ComingSoon.ttf");
+//        Typeface bold = Typeface.create(tf, Typeface.BOLD);
+//        paint.setTypeface(bold);
         canvas.drawText("Level: "+bm.getRound(),currentWidth-320,225,paint);
         canvas.drawText("Health: "+bm.getHealth(),currentWidth-320,275,paint);
         canvas.drawText("Mana: "+bm.getMana(),currentWidth-320,315,paint);
         if(tempAlly!=null)
             canvas.drawBitmap(tempAlly.getAppearance(),tempAlly.getPos_x(),tempAlly.getPos_y(),paint);
+
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLUE);
+        canvas.drawRect(10, (int)(currentHeight*7.8/9.0),110,(int)(currentHeight*7.9/9.0)+(int)(currentHeight*1/20.0),paint);
+
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setTextSize(60);
+        canvas.drawText(">>",30,(int)(currentHeight*8.2/9.0),paint);
+
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(40);
     }
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -455,17 +471,21 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        Ally ally;
+
         switch(event.getAction()){
 
             case MotionEvent.ACTION_DOWN:
+                int x = (int)event.getX();
+                int y = (int)event.getY();
                 if(selected!=-1&&bm.getMana()>= availableAllyList.get(selected).getAa().getCostToBuy() *(((bm.getRound()+5)/5.0))){
                     tempAlly= new Ally(availableAllyList.get(selected),(int)event.getX()-50,(int)event.getY()-50,selected);
                     invalidate();}
+                else if(x >10&&y> (int)(currentHeight*7.8/9.0)&&x<110&&y<(int)(currentHeight*7.8/9.0)+50){
+                    if(enemyThread!=null)
+                    enemyThread.speed=5;
+                }
                 else if(selected!=1)
                 {
-                    int x = (int)event.getX();
-                    int y = (int)event.getY();
                     for(int i=alliesInBattle.size()-1;i>=0;i--){
                         if(x>alliesInBattle.get(i).getPos_x()&&x<alliesInBattle.get(i).getPos_x()+100&&
                                 y>alliesInBattle.get(i).getPos_y()&&y<alliesInBattle.get(i).getPos_y()+100)
@@ -532,6 +552,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     selected=-1;
                     tempAlly=null;
                     invalidate();}
+                if(enemyThread!=null)
+                    enemyThread.speed=50;
                 return true;
         }
         return false;
@@ -541,6 +563,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         public boolean paused= false;
         public boolean done = false;
+        public int speed= 50;
 
         @Override
         protected void onPreExecute() {
@@ -565,10 +588,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
             generateRound();
 
             while(!done){
-
-                Log.i("Done-----","Inside Done");
             while(!paused){
-                Log.i("Done-----","Inside Paused");
 
                     synchronized (lock){
                         for(int j=0; j<enemiesInBattle.size();j++){
@@ -624,8 +644,6 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                             else
                                 temp.setVel_x(-20);
 
-
-
                             if (temp.enemy.getPos_y() > temp.getY())
                                 temp.setVel_y(Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
                             else
@@ -640,13 +658,57 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     postInvalidate();
                     if(enemiesInBattle.size()==0&&enemyQueue.size()==0){
                         projectileList.clear();
+                        if(bm.getRound()%10==0)
+                            bm.setHealth(bm.getHealth()+1000);
                         postInvalidate();
                         return null;
                     }
+                    if(bm.getHealth()<=0){
+                        projectileList.clear();
+                        enemyQueue.clear();
+                        enemiesInBattle.clear();
+                        alliesInBattle.clear();
+                        bm.setMana(3000);
+                        bm.setHealth(10000);
+                        bm.setRound(0);
+                        postInvalidate();
 
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                final Dialog dialog = new Dialog(mainContext);
+                                dialog.setContentView(R.layout.character_popup);
+
+                                dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
+                                TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
+                                tv.setText("Battle lost");
+
+                                Button b = (Button) dialog.findViewById(R.id.cancel_button);
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                b.setVisibility(View.INVISIBLE);
+
+                                b = (Button) dialog.findViewById(R.id.addButton);
+                                b.setText("Restart");
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                dialog.show();
+                            }
+                        });
+                        return null;
+                    }
 
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(speed);
                     } catch (InterruptedException e) {
 
 
@@ -706,12 +768,6 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                 enemyQueue.add(enemy);
             }
 
-          /*  for(int j=0;j<10;j++){
-                for(int i=0;i<availableEnemyList.size();i++){
-                 enemy = new Enemy(availableEnemyList.get(i));
-                 enemyQueue.add(enemy);
-                }
-            }*/
         }
         @Override
         protected void onProgressUpdate(Object... values) {
@@ -724,6 +780,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
             super.onPostExecute(aVoid);
             Button b = (Button) mainContext.findViewById(R.id.start_button);
             b.setVisibility(VISIBLE);
+            mainContext.saveFile();
             enemyThread=null;
         }
     }

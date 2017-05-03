@@ -46,6 +46,7 @@ import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity {
 
+    Toast toast;
     BattleFieldView bfv;
     Bitmap bitmap;
     @Override
@@ -54,9 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LinearLayout ll = (LinearLayout)findViewById(R.id.scroll);
-        ImageView im = new ImageView(getApplicationContext());
-
-
+        ImageView im;
         bfv = (BattleFieldView)findViewById(R.id.BattleFieldView);
         HorizontalScrollView hsv = (HorizontalScrollView)findViewById(R.id.scrollview);
         ViewGroup.LayoutParams params = hsv.getLayoutParams();
@@ -66,80 +65,119 @@ public class MainActivity extends AppCompatActivity {
         params.width = bfv.currentWidth;
         hsv.setLayoutParams(params);
 
-
         final Button b = (Button) findViewById(R.id.start_button);
+
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bfv.enemyThread==null){
+                if(bfv.enemyThread==null&&bfv.alliesInBattle.size()>0){
                     bfv.enemyThread = bfv.new animateEnemies(bfv);
                     bfv.enemyThread.execute();
-                }}
+                }
+                else
+                {
+                    if(bfv.bm.getMana()<bfv.availableAllyList.get(0).getAa().getCostToBuy() *(((bfv.bm.getRound()+5)/5.0))) {
+
+                        bfv.projectileList.clear();
+                        bfv.enemyQueue.clear();
+                        bfv.enemiesInBattle.clear();
+                        bfv.alliesInBattle.clear();
+                        bfv.bm.setMana(3000);
+                        bfv.bm.setHealth(10000);
+                        bfv.bm.setRound(0);
+                        bfv.invalidate();
+
+                        final Dialog dialog = new Dialog(v.getContext());
+                        dialog.setContentView(R.layout.character_popup);
+
+                        dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
+                        TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
+                        tv.setText("Out of Mana");
+                        Button b = (Button) dialog.findViewById(R.id.cancel_button);
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        b.setVisibility(View.INVISIBLE);
+
+                        b = (Button) dialog.findViewById(R.id.addButton);
+                        b.setText("Restart");
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        dialog.show();
+                    }
+                    else{
+                        if(toast != null){
+                            toast.cancel();
+                        }
+                        toast = Toast.makeText(getApplicationContext(),"Must have allies on field",Toast.LENGTH_SHORT);
+                        toast.show();}
+                }
+            }
         });
         int k=0;
         for(int i = 0;i<12;i++){
 
             im = new ImageView(getApplicationContext());
             bitmap = bfv.availableAllyList.get(i).getAppearance();
-                bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
+            bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false);
             im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
             im.setBackgroundColor(0xFF222222);
             im.setId(k);
-                im.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Toast.makeText(getApplicationContext(),v.getId()+" ",Toast.LENGTH_LONG).show();
-                        final Dialog dialog = new Dialog(MainActivity.this);
-                        dialog.setContentView(R.layout.character_popup);
+            im.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    dialog.setContentView(R.layout.character_popup);
 
-                        dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
-                        TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
-                        tv.setText(bfv.allyAttributesList.get(v.getId()).getName());
-                        ImageView im = (ImageView) dialog.findViewById(R.id.ally_bitmap);
-                        im.setImageDrawable(new BitmapDrawable(getResources(),bfv.availableAllyList.get(v.getId()).getAppearance()));
-                        tv = (TextView) dialog.findViewById(R.id.affinity);
-                        tv.setText("AFFINITY: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
-                        tv = (TextView) dialog.findViewById(R.id.weakness);
-                        tv.setText("DAMAGE: " + bfv.weaponList.get(v.getId()).getDamage());
-                        tv = (TextView) dialog.findViewById(R.id.costToBuy);
-                        if(bfv.bm.getRound()>1)
-                            tv.setText("COST: " + (int)(bfv.allyAttributesList.get(v.getId()).getCostToBuy()*(((bfv.bm.getRound()+5)/5.0))));
-                        else
-                          tv.setText("COST: " + bfv.allyAttributesList.get(v.getId()).getCostToBuy());
+                    dialog.findViewById(R.id.root).setBackgroundColor(0xff000000);
+                    TextView tv = (TextView) dialog.findViewById(R.id.ally_name);
+                    tv.setText(bfv.allyAttributesList.get(v.getId()).getName());
+                    ImageView im = (ImageView) dialog.findViewById(R.id.ally_bitmap);
+                    im.setImageDrawable(new BitmapDrawable(getResources(),bfv.availableAllyList.get(v.getId()).getAppearance()));
+                    tv = (TextView) dialog.findViewById(R.id.affinity);
+                    tv.setText("AFFINITY: " + bfv.allyAttributesList.get(v.getId()).getAffinity());
+                    tv = (TextView) dialog.findViewById(R.id.weakness);
+                    tv.setText("DAMAGE: " + bfv.weaponList.get(v.getId()).getDamage());
+                    tv = (TextView) dialog.findViewById(R.id.costToBuy);
+                    if(bfv.bm.getRound()>1)
+                        tv.setText("COST: " + (int)(bfv.allyAttributesList.get(v.getId()).getCostToBuy()*(((bfv.bm.getRound()+5)/5.0))));
+                    else
+                        tv.setText("COST: " + bfv.allyAttributesList.get(v.getId()).getCostToBuy());
 
+                    Button b = (Button) dialog.findViewById(R.id.cancel_button);
+                    b.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.cancel();
+                        }
+                    });
 
+                    final int id = v.getId();
+                    b = (Button) dialog.findViewById(R.id.addButton);
+                    b.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                        Button b = (Button) dialog.findViewById(R.id.cancel_button);
-                        //b.setWidth((int)(dialog.getWindow().getDecorView().getWidth()/2.0));
-                        b.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.cancel();
-                            }
-                        });
+                            bfv.selected=id;
+                            bfv.invalidate();
+                            dialog.cancel();
+                        }
+                    });
+                    dialog.show();
 
-                        final int id = v.getId();
-                        b = (Button) dialog.findViewById(R.id.addButton);
-                        //b.setWidth((int)(dialog.getWindow().getDecorView().getWidth()/2.0));
-                        b.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                bfv.selected=id;
-                                bfv.invalidate();
-                                dialog.cancel();
-                            }
-                        });
-                        dialog.show();
-
-                        //bfv.bitmapTemp=  Bitmap.createBitmap(bfv.bitMap[i][j]);
-                        //bfv.invalidate();
-
-                    }
-                });
-                k++;
+                }
+            });
+            k++;
             ll.addView(im);
-            }
+        }
         bfv.setMainContext(this);
         Intent intent = getIntent();
         if(intent.hasExtra("load")){
@@ -158,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             bfv.enemyThread.paused=false;
 
         }
-Log.i("Resume--","OnResume");
+        Log.i("Resume--","OnResume");
     }
 
     @Override
@@ -189,6 +227,8 @@ Log.i("Resume--","OnResume");
             Scanner s = new Scanner(fis);
             if(s.hasNext())
                 bfv.bm.setRound(s.nextInt());
+            //bfv.bm.setRound(34);
+
             if(s.hasNext())
                 bfv.bm.setHealth(s.nextInt());
             if(s.hasNext())
@@ -209,10 +249,6 @@ Log.i("Resume--","OnResume");
 
                 bfv.alliesInBattle.add(new Ally(bfv.availableAllyList.get(index),x,y,index));
             }
-
-            Log.i("ji",""+bfv.alliesInBattle.size());
-           // bfv.alliesInBattle = (List<Ally>) objectinputstream.readObject();
-
 
             s.close();
         } catch (FileNotFoundException e) {
@@ -251,7 +287,6 @@ Log.i("Resume--","OnResume");
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         saveFile();
     }
 
@@ -260,9 +295,7 @@ Log.i("Resume--","OnResume");
         super.onStop();
         if (bfv.enemyThread != null) {
             bfv.enemyThread.paused = true;
-        }Log.i("Stop--","OnStop");
-
-
+        }
     }
 
     @Override
@@ -278,8 +311,6 @@ Log.i("Resume--","OnResume");
         }
         Button b = (Button)findViewById(R.id.start_button);
         b.setVisibility(VISIBLE);
-
-        Log.i("Destroy--","OnDestroy");
 
         saveFile();
     }
