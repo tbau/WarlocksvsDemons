@@ -13,6 +13,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
+        //OnClick to pop-up Credits dialog
         Button b = (Button) findViewById(R.id.credits);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
