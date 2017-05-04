@@ -9,9 +9,9 @@ public class Projectile {
     private int y;
     private int vel_x;
     private int vel_y;
-    int lifetime = 30;
+    private int lifetime = 30;
     private Weapon weapon;
-    Enemy enemy;
+    private Enemy enemy;
 
     public Projectile(int x, int y, int vel_x, int vel_y, Weapon weapon, Enemy enemy) {
         this.x = x;
@@ -21,7 +21,6 @@ public class Projectile {
         this.weapon=weapon;
         this.enemy=enemy;
     }
-
     public int getX() {
         return x;
     }
@@ -54,9 +53,27 @@ public class Projectile {
         this.vel_y = vel_y;
     }
 
-    public Weapon getWeapon() {return weapon;}
+    public int getLifetime() {
+        return lifetime;
+    }
 
-    public void setWeapon(Weapon weapon) {this.weapon = weapon;}
+    public void setLifetime(int lifetime) {
+        this.lifetime = lifetime;
+    }
 
+    public Weapon getWeapon() {
+        return weapon;
+    }
 
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public Enemy getEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(Enemy enemy) {
+        this.enemy = enemy;
+    }
 }

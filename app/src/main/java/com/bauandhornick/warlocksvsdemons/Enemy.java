@@ -10,14 +10,13 @@ import android.graphics.Color;
 
 public class Enemy extends Character {
 
-    EnemyAttributes ea;
+    private EnemyAttributes ea;
     private BattleFieldView context;
-    boolean [] atEdge;
-    int health;
-    int speedX;
-    int speedY;
-
-    int colorFilter;
+    private boolean [] atEdge;
+    private int health;
+    private int speedX;
+    private int speedY;
+    private int colorFilter;
 
     public Enemy(Enemy enemy){
         super(0, (int) (enemy.getContext().currentHeight*2/13.0),enemy.getAppearance());
@@ -37,22 +36,6 @@ public class Enemy extends Character {
 
     public Enemy(){super(0,0,null);}
 
-    public EnemyAttributes getEa() {
-        return ea;
-    }
-
-    public void setEa(EnemyAttributes ea) {
-        this.ea = ea;
-    }
-
-    public BattleFieldView getContext() {
-        return context;
-    }
-
-    public void setContext(BattleFieldView context) {
-        this.context = context;
-    }
-
     @Override
     public void animate() {
         int x = getPos_x();
@@ -69,7 +52,7 @@ public class Enemy extends Character {
             setPos_x(getPos_x()+100);
             atEdge[1]=true;
         }
-        else if(directionFacing==Direction.LEFT&&getPos_x()<context.currentWidth*1/12.0+80&&!atEdge[2]){
+        else if(directionFacing==Direction.LEFT&&getPos_x()<context.currentWidth/12.0+80&&!atEdge[2]){
             directionFacing = Direction.DOWN;
             setPos_x(getPos_x()-100);
             atEdge[2]=true;
@@ -153,5 +136,61 @@ public class Enemy extends Character {
         }
 
     }
+    public EnemyAttributes getEa() {
+        return ea;
+    }
+
+    public void setEa(EnemyAttributes ea) {
+        this.ea = ea;
+    }
+
+    public BattleFieldView getContext() {
+        return context;
+    }
+
+    public void setContext(BattleFieldView context) {
+        this.context = context;
+    }
+
+    public boolean[] getAtEdge() {
+        return atEdge;
+    }
+
+    public void setAtEdge(boolean[] atEdge) {
+        this.atEdge = atEdge;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getSpeedX() {
+        return speedX;
+    }
+
+    public void setSpeedX(int speedX) {
+        this.speedX = speedX;
+    }
+
+    public int getSpeedY() {
+        return speedY;
+    }
+
+    public void setSpeedY(int speedY) {
+        this.speedY = speedY;
+    }
+
+    public int getColorFilter() {
+        return colorFilter;
+    }
+
+    public void setColorFilter(int colorFilter) {
+        this.colorFilter = colorFilter;
+    }
+
 
 }

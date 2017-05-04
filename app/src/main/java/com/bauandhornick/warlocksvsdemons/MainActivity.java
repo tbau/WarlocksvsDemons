@@ -74,39 +74,16 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bfv.enemyThread==null&&bfv.alliesInBattle.size()>0){
-                    bfv.enemyThread = bfv.new animateEnemies(bfv);
-                    bfv.enemyThread.execute();
-
-                }}
-        });
-        int k=0;
-
-        //For all 12 allies, get their bitmaps and place them in the HorizontalScrollView
-        for(int i = 0;i<12;i++){
-
-            im = new ImageView(getApplicationContext());
-
-            //Get bitmap of ally from the Available Ally list, which stores all 12.
-            bitmap = bfv.availableAllyList.get(i).getAppearance();
-                bitmap = Bitmap.createScaledBitmap(bitmap,200,200,false); //Scale the bitmap to 200 x 200
-            im.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
-            im.setBackgroundColor(0xFF222222); //Set background color of ScrollView to black
-            im.setId(k);
-
-                //SetOnClickListener for each Ally image. When clicked, a dialog will pop up with the Ally's name, Affinity, Damage, and Cost.
-                im.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //v.getId() will correspond to an index in AllyAttributeList and AvailableAllyList
-
-                        final Dialog dialog = new Dialog(MainActivity.this);
+                if(bfv.gameThread==null&&bfv.alliesInBattle.size()>0){
+                    bfv.gameThread = bfv.new animateGame(bfv);
+                    bfv.gameThread.execute();
 
                 }
                 else
                 {
                     if(bfv.bm.getMana()<bfv.availableAllyList.get(0).getAa().getCostToBuy() *(((bfv.bm.getRound()+5)/5.0))) {
 
+                        //Reset everything
                         bfv.projectileList.clear();
                         bfv.enemyQueue.clear();
                         bfv.enemiesInBattle.clear();
@@ -238,9 +215,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (bfv.enemyThread != null) {
-            bfv.enemyThread.paused=false;
-
+        if (bfv.gameThread != null) {
+            bfv.gameThread.paused=false;
         }
         Log.i("Resume--","OnResume");
     }
@@ -302,8 +278,6 @@ public class MainActivity extends AppCompatActivity {
             s.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
     public void saveFile(){
@@ -320,15 +294,13 @@ public class MainActivity extends AppCompatActivity {
             pw.println(bfv.bm.getDifficulty().ordinal());
 
             for(int i=0;i<bfv.alliesInBattle.size();i++){
-                pw.println(bfv.alliesInBattle.get(i).index);
+                pw.println(bfv.alliesInBattle.get(i).getIndex());
                 pw.println(bfv.alliesInBattle.get(i).getPos_x());
                 pw.println(bfv.alliesInBattle.get(i).getPos_y());
             }
 
             pw.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -342,18 +314,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (bfv.enemyThread != null) {
-            bfv.enemyThread.paused = true;
+        if (bfv.gameThread != null) {
+            bfv.gameThread.paused = true;
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bfv.enemyThread != null) {
-            bfv.enemyThread.paused=true;
-            bfv.enemyThread.done=true;
-            bfv.enemyThread=null;
+        if (bfv.gameThread != null) {
+            bfv.gameThread.paused=true;
+            bfv.gameThread.done=true;
+            bfv.gameThread=null;
 
             bfv.bm.setRound(bfv.bm.getRound()-1);
 

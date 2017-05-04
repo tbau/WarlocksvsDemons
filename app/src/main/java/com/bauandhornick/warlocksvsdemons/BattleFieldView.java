@@ -82,7 +82,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
     Matrix flipMatrix;
 
-    animateEnemies enemyThread;
+    animateGame gameThread;
 
     int selected=0;
 
@@ -431,14 +431,15 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         //Draw all allies in BattleField at their coordinates.
         for (Ally ally : alliesInBattle) {
-            canvas.drawBitmap(ally.getAppearance(),ally.getPos_x(),ally.getPos_y(),paint);
-
+            canvas.drawBitmap(ally.getAppearance(), ally.getPos_x(), ally.getPos_y(), paint);
+        }
         //For each enemy, draw on the canvas. Depending on direction facing, it may need to be flipped using flipMatrix
     
         synchronized (lock){
         for(int p= enemiesInBattle.size()-1;p>=0;p--){
-            if(enemiesInBattle.get(p).colorFilter>=0&&enemiesInBattle.get(p).colorFilter<4)
-                paint.setColorFilter(filter[enemiesInBattle.get(p).colorFilter]);
+            int colorFilter=enemiesInBattle.get(p).getColorFilter();
+            if(colorFilter>=0&&colorFilter<4)
+                paint.setColorFilter(filter[colorFilter]);
             if(enemiesInBattle.get(p).directionFacing!= Character.Direction.LEFT)
                 canvas.drawBitmap(enemiesInBattle.get(p).getAppearance(),
                         enemiesInBattle.get(p).getPos_x(),enemiesInBattle.get(p).getPos_y(),paint);
@@ -472,7 +473,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLUE);
-        canvas.drawRect(10, (int)(currentHeight*7.8/9.0),110,(int)(currentHeight*7.9/9.0)+(int)(currentHeight*1/20.0),paint);
+        canvas.drawRect(10, (int)(currentHeight*7.8/9.0),110,(int)(currentHeight*7.9/9.0)+(int)(currentHeight/20.0),paint);
 
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
@@ -501,8 +502,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     tempAlly= new Ally(availableAllyList.get(selected),(int)event.getX()-50,(int)event.getY()-50,selected);
                     invalidate();}
                 else if(x >10&&y> (int)(currentHeight*7.8/9.0)&&x<110&&y<(int)(currentHeight*7.8/9.0)+50){
-                    if(enemyThread!=null)
-                    enemyThread.speed=5;
+                    if(gameThread!=null)
+                    gameThread.speed=5;
                 }
                 else if(selected!=1)
                 {
@@ -577,15 +578,15 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     selected=-1;
                     tempAlly=null;
                     invalidate();}
-                if(enemyThread!=null)
-                    enemyThread.speed=50;
+                if(gameThread!=null)
+                    gameThread.speed=50;
                 return true;
         }
         return false;
     }
 
-    /* animateEnemies is a class that extends AsyncTask that manages how the enemies are animated */
-    public class animateEnemies extends AsyncTask<Object, Object, Void> {
+    /* animateGame is a class that extends AsyncTask that manages how everything is animated */
+    public class animateGame extends AsyncTask<Object, Object, Void> {
 
         public boolean paused= false;
         public boolean done = false;
@@ -603,7 +604,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
         private BattleFieldView context;
 
-        public animateEnemies(BattleFieldView context) {
+        public animateGame(BattleFieldView context) {
             this.context = context;
         }
 
@@ -611,9 +612,14 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         protected Void doInBackground(Object... params) {
             double i=0;
 
+            //Increases the round
             bm.setRound(bm.getRound()+1);
 
+            //Sets up the queue of enemies
             generateRound();
+
+            //done and paused variables are used to keep the
+            //thread running when the app is paused or closed
 
             while(!done){
             while(!paused){
@@ -622,24 +628,30 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                         for(int j=0; j<enemiesInBattle.size();j++){
 
                             enemiesInBattle.get(j).animate();
-                            enemiesInBattle.get(j).colorFilter=3;
+                            enemiesInBattle.get(j).setColorFilter(3);
 
+                            //Goes through all of the projectiles
                             for(int m=0;m<projectileList.size();m++){
                                 int x=projectileList.get(m).getX();
                                 int y=projectileList.get(m).getY();
 
-                                if(projectileList.get(m).enemy==null) {
+                                //Suppose to remove projectiles that are homing in on a dead enemy
+                                if(projectileList.get(m).getEnemy()==null) {
                                     projectileList.remove(m);
-
                                 }
+                                //Checks if a projectile is at the enemy
                                 if(x>enemiesInBattle.get(j).getPos_x()-20&&x<enemiesInBattle.get(j).getPos_x()+120&&
                                         y>enemiesInBattle.get(j).getPos_y()-20&&y<enemiesInBattle.get(j).getPos_y()+120){
-                                    enemiesInBattle.get(j).health-=projectileList.get(m).getWeapon().getDamage();
 
-                                    enemiesInBattle.get(j).colorFilter=projectileList.get(m).getWeapon().getWeaponAffinity().ordinal();
+                                    //Damage the enemy
+                                    enemiesInBattle.get(j).setHealth(enemiesInBattle.get(j).getHealth()-projectileList.get(m).getWeapon().getDamage());
+
+                                    //Make the color filter of the enemy match what it was hit with
+                                    enemiesInBattle.get(j).setColorFilter(projectileList.get(m).getWeapon().getWeaponAffinity().ordinal());
                                     projectileList.remove(m);
 
-                                    if(enemiesInBattle.get(j).health<=0){
+                                    //Removes enemies that have negative health
+                                    if(enemiesInBattle.get(j).getHealth()<=0){
                                         bm.setMana(bm.getMana()+enemiesInBattle.get(j).getEa().getManaGain());
                                         enemiesInBattle.remove(j);
                                     }
@@ -647,12 +659,15 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                                 }
 
                             }
+                            //If an enemy reaches the end, take away health
                             if(enemiesInBattle.size()>0&&j<enemiesInBattle.size() && enemiesInBattle.get(j).getPos_x()>currentWidth){
                                 bm.setHealth(bm.getHealth()-enemiesInBattle.get(j).getEa().getDamage());
 
                                 enemiesInBattle.remove(j);
                             }
                         }}
+
+                    //Creates new projectiles for every ally
                     for(int j=0;j<alliesInBattle.size();j++){
                         alliesInBattle.get(j).animate();
                     }
@@ -660,22 +675,28 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                         for (int j = 0; j < projectileList.size(); j++) {
                             Projectile temp = projectileList.get(j);
 
-                            temp.lifetime--;
+                            //Lifetime of projectile
+                            temp.setLifetime(temp.getLifetime()-1);
 
-                            if (temp.enemy == null||temp.lifetime<=0) {
+                            //Remove projectile if it is too olde
+                            if (temp.getEnemy() == null||temp.getLifetime()<=0) {
                                 projectileList.remove(j);
                                 continue;
                             }
 
-                            if (temp.enemy.getPos_x() > temp.getX())
+                            //Make the projectile move depending on the enemy it is
+                            //homing into
+                            if (temp.getEnemy().getPos_x() > temp.getX())
                                 temp.setVel_x(20);
                             else
                                 temp.setVel_x(-20);
 
-                            if (temp.enemy.getPos_y() > temp.getY())
-                                temp.setVel_y(Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
+                            //Make the projectile move depending on the enemy it is
+                            //homing into
+                            if (temp.getEnemy().getPos_y() > temp.getY())
+                                temp.setVel_y(Math.abs(temp.getY() - temp.getEnemy().getPos_y()) / 10);
                             else
-                                temp.setVel_y(-Math.abs(temp.getY() - temp.enemy.getPos_y()) / 10);
+                                temp.setVel_y(-Math.abs(temp.getY() - temp.getEnemy().getPos_y()) / 10);
 
                             temp.setX(temp.getX() + temp.getVel_x());
                             temp.setY(temp.getY() + temp.getVel_y());
@@ -684,6 +705,8 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     }
 
                     postInvalidate();
+
+                    //If there are no enemies in battle and no enemies in the queue, the round is over
                     if(enemiesInBattle.size()==0&&enemyQueue.size()==0){
                         projectileList.clear();
                         if(bm.getRound()%10==0)
@@ -691,6 +714,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                         postInvalidate();
                         return null;
                     }
+                    //If you run out of health, display a popup and reset the game
                     if(bm.getHealth()<=0){
                         projectileList.clear();
                         enemyQueue.clear();
@@ -735,6 +759,7 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                         return null;
                     }
 
+                    //Slow down the game depending on speed
                     try {
                         Thread.sleep(speed);
                     } catch (InterruptedException e) {
@@ -742,7 +767,10 @@ public class BattleFieldView extends View implements View.OnTouchListener {
 
                     }
 
+                    //Counter to keep track of when to add another enemy from the queue
                     i+=0.2;
+
+                    //Get an enemy from the queue and add it to battle
                     if(i>=1&&enemyQueue.size()>0) {
                         Enemy enemy = new Enemy(enemyQueue.get(enemyQueue.size()-1));
                         enemiesInBattle.add(enemy);
@@ -752,9 +780,9 @@ public class BattleFieldView extends View implements View.OnTouchListener {
                     postInvalidate();
                 }
             }
+            //Makes sure to clear everything
             if(enemiesInBattle.size()>0){
                 enemiesInBattle.clear();
-
             }
             if(enemyQueue.size()>0)
                 enemyQueue.clear();
@@ -765,27 +793,45 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         /* This function generates the amount of enemies for a new round, which will change as the rounds progress */
         public void generateRound(){
 
+            //Algorithm to generate round
             Enemy enemy;
 
+            //This is responsible for what enemies can show up
+            //this round.
+            //Every ten rounds, a new enemy is available.
             int i =(bm.getRound()/10)+1;
+
+            //If the round is too high, set i to the highest,
+            //so it is in bounds of the array
 
             if(i>availableEnemyList.size())
                 i=availableEnemyList.size();
 
+            //
             if(i==0)
                 i=1;
 
+            //Gets the mana and makes sure it is not 0
             int k = bm.getMana()+1;
 
             int l=10;
 
+            //Don't know why all of this seems to give
+            //good results
+
+            //l is used to to calculate number of enemies in queue
             if(alliesInBattle.size()>0)
                 l = rand.nextInt(alliesInBattle.size()+(i*alliesInBattle.size())/k)+1;
 
+            //num is number of enemies to add.
             int num = l*i+(rand.nextInt(4)+1)*(rand.nextInt(2)+1);
+
+            //Didn't want the player to be overly outnumbered
+            //Max number of enemies depends on allies on field
             if(num>10*alliesInBattle.size())
                 num=4*alliesInBattle.size();
 
+            //Adds a random enemy to queue
             for(int count=0;count<num;count++){
                 enemy = new Enemy(availableEnemyList.get(rand.nextInt(i)));
                 enemyQueue.add(enemy);
@@ -801,10 +847,14 @@ public class BattleFieldView extends View implements View.OnTouchListener {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            //Makes the start round button visible
             Button b = (Button) mainContext.findViewById(R.id.start_button);
             b.setVisibility(VISIBLE);
+
+            //Saves everything to the file
             mainContext.saveFile();
-            enemyThread=null;
+            gameThread=null;
         }
     }
 
